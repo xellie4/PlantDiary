@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@drawable/bg_plantdiary"
     app:title="@string/app_name"
-    tools:context=".MainActivity">
+    tools:context=".LoginActivity">
 
     <ImageView
         android:id="@+id/quizzerlogo"
@@ -54,7 +54,7 @@
         android:inputType="textPassword" />
 
     <Button
-        android:id="@+id/registerButton"
+        android:id="@+id/loginButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/password_editText"
@@ -62,20 +62,19 @@
         android:layout_marginTop="45dp"
         android:background="@drawable/custom_button2"
         android:elevation="4dp"
-        android:text="register"
+        android:text="login"
         android:textColor="#111"
         android:textSize="13sp" />
 
-
     <Button
-        android:id="@+id/gotologinbutton"
-        android:layout_width="250dp"
+        android:id="@+id/gotoregisterbutton"
+        android:layout_width="190dp"
         android:layout_height="25dp"
-        android:layout_below="@+id/registerButton"
+        android:layout_below="@+id/loginButton"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="57dp"
         android:background="@null"
-        android:text="Already an user? Log in now"
+        android:text="New user? Register now"
         android:textColor="@color/teal3" />
 
 </RelativeLayout>
