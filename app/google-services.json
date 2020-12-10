@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "315551149978",
+    "firebase_url": "https://plantdiary-93979.firebaseio.com",
+    "project_id": "plantdiary-93979",
+    "storage_bucket": "plantdiary-93979.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:315551149978:android:35e8b007f3623993449423",
+        "android_client_info": {
+          "package_name": "chs.plantdiary"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "315551149978-m2s0qmg3hmfno2d1b653hpgp2d9a1rm8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBB3f1eBj_yuMwULyLKTbeV5YnFEnowu2A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "315551149978-m2s0qmg3hmfno2d1b653hpgp2d9a1rm8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
