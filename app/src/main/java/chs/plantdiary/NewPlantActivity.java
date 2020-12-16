@@ -23,11 +23,12 @@ public class NewPlantActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_newplant);
-
-        imageView = findViewById(R.id.image_view);
-        btOpen = findViewById(R.id.button);
+    }
+        //imageView = findViewById(R.id.image_view);
+        //btOpen = findViewById(R.id.button);
 
         //request for camera
+        /*
         if(ContextCompat.checkSelfPermission(NewPlantActivity.this,
                 Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED){
             ActivityCompat.requestPermissions(NewPlantActivity.this,
@@ -51,5 +52,5 @@ public class NewPlantActivity extends AppCompatActivity {
             Bitmap captureImage = (Bitmap) data.getExtras().get("data");
             imageView.setImageBitmap(captureImage);
         }
-    }
+    }*/
 }

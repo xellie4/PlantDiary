@@ -6,23 +6,243 @@
     android:layout_height="match_parent"
     android:background="@drawable/bg_plantdiary"
     tools:context=".NewPlantActivity"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:visibility="visible" >
 
-    <Button
+    <TextView
+        android:id="@+id/textrandom"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Take a pic"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="55dp"
-        android:id="@+id/button"
-
+        android:layout_marginTop="130dp"
+        android:text="NEW PLANT"
+        android:layout_gravity="center"
+        android:textColor="@color/white"
+        android:textSize="23dp"
         />
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:id="@+id/image_view"
-        />
+    <RelativeLayout
+        android:id="@+id/sunLayout"
+        android:layout_below="@+id/textrandom"
+        android:layout_marginTop="70dp"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:orientation="horizontal"
+        android:visibility="visible">
+
+        <ImageView
+            android:id="@+id/sunImage"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentStart="true"
+            android:layout_gravity="center"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="5dp"
+            android:src="@drawable/sun_icon" />
+
+        <TextView
+            android:id="@+id/sunText"
+            android:layout_width="140dp"
+            android:layout_height="match_parent"
+            android:layout_toEndOf="@id/sunImage"
+            android:gravity="center_vertical"
+            android:textColor="@color/white"
+            android:text="Sunlight"
+            android:textSize="23dp" />
+
+        <EditText
+            android:id="@+id/sunDataText"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginEnd="10dp"
+            android:background="#32000000"
+            android:layout_toEndOf="@id/sunText"
+            android:gravity="center"
+            android:hint="introduce informatii"
+            android:importantForAutofill="no"
+            android:textColor="@color/white"
+            android:textSize="23dp" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/waterLayout"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_below="@+id/sunLayout"
+        android:layout_marginTop="15dp"
+        android:orientation="horizontal"
+        android:visibility="visible">
+
+        <ImageView
+            android:id="@+id/waterImage"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentStart="true"
+            android:layout_gravity="center"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="5dp"
+            android:src="@drawable/water_icon" />
+
+        <TextView
+            android:id="@+id/waterText"
+            android:layout_width="140dp"
+            android:layout_height="match_parent"
+            android:layout_toEndOf="@id/waterImage"
+            android:gravity="center_vertical"
+            android:text="Water"
+            android:textColor="@color/white"
+            android:textSize="23dp" />
+
+        <EditText
+            android:id="@+id/waterDataText"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginEnd="10dp"
+            android:layout_toEndOf="@id/waterText"
+            android:gravity="center"
+            android:background="#32000000"
+            android:hint="introduce informatii"
+            android:textColor="@color/white"
+            android:textSize="23dp" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/tempLayout"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_below="@+id/sunLayout"
+        android:layout_marginTop="15dp"
+        android:orientation="horizontal"
+        android:visibility="visible">
+
+        <ImageView
+            android:id="@+id/tempImage"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentStart="true"
+            android:layout_gravity="center"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="5dp"
+            android:src="@drawable/temp_icon" />
+
+        <TextView
+            android:id="@+id/tempText"
+            android:layout_width="140dp"
+            android:layout_height="match_parent"
+            android:layout_toEndOf="@id/tempImage"
+            android:gravity="center_vertical"
+            android:text="Room temp"
+            android:textColor="@color/white"
+            android:textSize="23dp" />
+
+        <EditText
+            android:id="@+id/tempDataText"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginEnd="10dp"
+            android:background="#32000000"
+            android:layout_toEndOf="@id/tempText"
+            android:gravity="center"
+            android:hint="introduce informatii"
+            android:textColor="@color/white"
+            android:textSize="23dp" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/fertilizerLayout"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_below="@+id/roomLayout"
+        android:layout_marginTop="15dp"
+        android:orientation="horizontal"
+        android:visibility="visible">
+
+        <ImageView
+            android:id="@+id/fertilizerImage"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="10dp"
+            android:gravity="center_vertical"
+            android:layout_marginEnd="5dp"
+            android:src="@drawable/fertilizer_icon" />
+
+        <TextView
+            android:id="@+id/fertilizerText"
+            android:layout_width="140dp"
+            android:layout_height="match_parent"
+            android:layout_toEndOf="@id/fertilizerImage"
+            android:gravity="center_vertical"
+            android:text="Fertilizer"
+            android:textColor="@color/white"
+            android:textSize="23dp" />
+
+        <EditText
+            android:id="@+id/fertilizerDataText"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginEnd="10dp"
+            android:layout_toEndOf="@id/fertilizerText"
+            android:gravity="center"
+            android:background="#32000000"
+            android:hint="introduce informatii"
+            android:textColor="@color/white"
+            android:textSize="23dp" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/soilLayout"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_below="@+id/roomLayout"
+        android:layout_marginTop="15dp"
+        android:orientation="horizontal"
+        android:visibility="visible">
+
+        <ImageView
+            android:id="@+id/soilImage"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="10dp"
+            android:gravity="center_vertical"
+            android:layout_marginEnd="5dp"
+            android:src="@drawable/soil_icon" />
+
+        <TextView
+            android:id="@+id/soilText"
+            android:layout_width="140dp"
+            android:layout_height="match_parent"
+            android:layout_toEndOf="@id/soilImage"
+            android:gravity="center_vertical"
+            android:text="Soil mixture"
+            android:textColor="@color/white"
+            android:textSize="23dp" />
+
+        <EditText
+            android:id="@+id/soilDataText"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginEnd="10dp"
+            android:layout_toEndOf="@id/soilText"
+            android:gravity="center"
+            android:background="#32000000"
+            android:hint="introduce informatii"
+            android:textColor="@color/white"
+            android:textSize="23dp" />
+
+    </RelativeLayout>
 
 </LinearLayout>
