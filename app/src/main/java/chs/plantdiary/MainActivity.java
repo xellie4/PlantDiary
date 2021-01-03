@@ -8,21 +8,21 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-/* the register screen is the initial screen */
+/* login activity is the initial screen */
 public class MainActivity extends AppCompatActivity {
     private EditText username;
     private EditText password;
-    private Button registerButton;
-    private Button goToLoginButton;
+    private Button loginButton;
+    private Button goToRegisterButton;
 
     private FirebaseAuth mFirebaseAuth;
+    private FirebaseAuth.AuthStateListener mAuthStateListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,60 +33,66 @@ public class MainActivity extends AppCompatActivity {
 
         username = (EditText) findViewById(R.id.username_editText);
         password = (EditText) findViewById(R.id.password_editText);
-        registerButton = (Button) findViewById(R.id.registerButton);
-        goToLoginButton = (Button) findViewById(R.id.gotologinbutton);
+        loginButton = (Button) findViewById(R.id.loginButton);
+        goToRegisterButton = (Button) findViewById(R.id.gotoregisterbutton);
 
-        registerButton.setOnClickListener(new View.OnClickListener() {
+        /* check if already logged in */
+        if (mFirebaseAuth.getCurrentUser() != null){
+            Toast toast = Toast.makeText(MainActivity.this, "You are already logged in!", Toast.LENGTH_SHORT);
+            toast.show();
+
+            Intent goToLoggedInActivity = new Intent(MainActivity.this, HomeActivity.class);
+            startActivity(goToLoggedInActivity);
+        }
+
+        loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String email = username.getText().toString();
                 String pass = password.getText().toString();
 
                 if(email.isEmpty() && pass.isEmpty()){
+                    username.setError("Please provide an email address");
+                    username.requestFocus();
+                    password.setError("Please provide a password");
+                    password.requestFocus();
                     Toast toast = Toast.makeText(MainActivity.this, "Fields are empty!", Toast.LENGTH_SHORT);
                     toast.show();
                 }
-                if(email.isEmpty()){
-                    username.setError("Please provide a username");
+                if(email.isEmpty() && !pass.isEmpty()){
+                    username.setError("Please provide an email address");
                     username.requestFocus();
                 }
-
-                if(pass.isEmpty()){
+                if(pass.isEmpty() && !email.isEmpty()) {
                     password.setError("Please provide a password");
                     password.requestFocus();
                 }
-
                 if(!email.isEmpty() && !pass.isEmpty()){
-                    mFirebaseAuth.createUserWithEmailAndPassword(email, pass).addOnCompleteListener(MainActivity.this,
-                            new OnCompleteListener<AuthResult>() {
-                                @Override
-                                public void onComplete(@NonNull Task<AuthResult> task) {
-                                    if(!task.isSuccessful()){
-                                        Toast toast = Toast.makeText(MainActivity.this, "Registration failed", Toast.LENGTH_SHORT);
-                                        toast.show();
-                                    }
-                                    else {
-                                        Toast toast = Toast.makeText(MainActivity.this, "Registration successful!", Toast.LENGTH_SHORT);
-                                        toast.show();
-
-                                        Intent goToLoggedInActivity = new Intent(MainActivity.this, HomeActivity.class);
-                                        startActivity(goToLoggedInActivity);
-                                    }
-                                }
-                            });
-                }
-                else{
-                    Toast toast = Toast.makeText(MainActivity.this, "Error Occurred! Please, try again!", Toast.LENGTH_SHORT);
-                    toast.show();
+                    mFirebaseAuth.signInWithEmailAndPassword(email, pass).addOnCompleteListener(MainActivity.this, new OnCompleteListener<AuthResult>()
+                    {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if(task.isSuccessful()){
+                                Toast toast = Toast.makeText(MainActivity.this, "Logged in successfully!", Toast.LENGTH_SHORT);
+                                toast.show();
+                                Intent goToLoggedInActivity = new Intent(MainActivity.this, HomeActivity.class);
+                                startActivity(goToLoggedInActivity);
+                            }
+                            else {
+                                Toast toast = Toast.makeText(MainActivity.this, "Login failed, please try again!", Toast.LENGTH_SHORT);
+                                toast.show();
+                            }
+                        }
+                    });
                 }
             }
         });
 
-        goToLoginButton.setOnClickListener(new View.OnClickListener() {
+        goToRegisterButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent goToLogin = new Intent(MainActivity.this, LoginActivity.class);
-                startActivity(goToLogin);
+                Intent goToRegister = new Intent(MainActivity.this, RegisterActivity.class);
+                startActivity(goToRegister);
             }
         });
     }

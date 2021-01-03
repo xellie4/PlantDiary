@@ -12,7 +12,7 @@ import com.google.firebase.auth.FirebaseAuth;
 public class HomeActivity extends AppCompatActivity {
     private Button addNewPlantButton;
     private Button galleryButton;
-    private Button wateringScheduleButton;
+    private Button wateringCalendarButton;
     private Button logOutButton;
 
     @Override
@@ -22,7 +22,7 @@ public class HomeActivity extends AppCompatActivity {
 
         addNewPlantButton = (Button) findViewById(R.id.cb1);
         galleryButton = (Button) findViewById(R.id.cb2);
-        wateringScheduleButton = (Button) findViewById(R.id.cb3);
+        wateringCalendarButton = (Button) findViewById(R.id.cb3);
         logOutButton = (Button) findViewById(R.id.logout_button);
 
         addNewPlantButton.setOnClickListener(new View.OnClickListener() {
@@ -45,21 +45,22 @@ public class HomeActivity extends AppCompatActivity {
                 startActivity(goToRegister);
             }
         });
-        /*
+
         galleryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent goToHomePage = new Intent(LoginActivity.this, HomePageActivity.class);
+                Intent goToHomePage = new Intent(HomeActivity.this, GalleryActivity.class);
                 startActivity(goToHomePage);
             }
         });
 
-        loginButton.setOnClickListener(new View.OnClickListener() {
+        wateringCalendarButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent goToHomePage = new Intent(LoginActivity.this, HomePageActivity.class);
+                Intent goToHomePage = new Intent(HomeActivity.this, WateringCalendarActivity.class);
                 startActivity(goToHomePage);
             }
-        });*/
+        });
+
     }
 }

@@ -10,8 +10,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.PlantDiary">
         <activity android:name="chs.plantdiary.NewPlantActivity" />
-        <activity android:name="chs.plantdiary.LoginActivity" />
+        <activity android:name="chs.plantdiary.RegisterActivity" />
         <activity android:name="chs.plantdiary.HomeActivity" />
+        <activity android:name="chs.plantdiary.GalleryActivity" />
+        <activity android:name="chs.plantdiary.WateringCalendarActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
