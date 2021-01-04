@@ -1,56 +1,195 @@
 package chs.plantdiary;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import android.Manifest;
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.view.View;
+import android.webkit.MimeTypeMap;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.graphics.Bitmap;
+import android.widget.ProgressBar;
+import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.StorageTask;
+import com.google.firebase.storage.UploadTask;
+
+import java.util.UUID;
 
 public class NewPlantActivity extends AppCompatActivity {
+    private static final int PICK_IMAGE_REQUEST = 1;
+    private Button chooseImageButton;
+    private Button saveButton;
+    private EditText editTextPlantName;
+    private EditText editTextSun;
+    private EditText editTextWater;
+    private EditText editTextTemp;
+    private EditText editTextFertilizer;
+    private EditText editTextSoil;
+    private ProgressBar progressBar;
     private ImageView imageView;
-    private Button btOpen;
+    private Uri imageUri;
 
-    private static final int REQUEST_IMAGE_CAPTURE = 101;
+    private StorageReference mStorageRef;
+    private DatabaseReference mDataBaseRef;
+
+    private StorageTask uploadTask;
+    private FirebaseAuth mFirebaseAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_newplant);
-    }
-        //imageView = findViewById(R.id.image_view);
-        //btOpen = findViewById(R.id.button);
 
-        //request for camera
-        /*
-        if(ContextCompat.checkSelfPermission(NewPlantActivity.this,
-                Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED){
-            ActivityCompat.requestPermissions(NewPlantActivity.this,
-                    new String [] {
-                            Manifest.permission.CAMERA
-                    },
-                    100);
-        }
+        chooseImageButton = findViewById(R.id.chooseimagebutton);
+        saveButton = findViewById(R.id.savebutton);
 
-        btOpen.setOnClickListener(new View.OnClickListener(){
-            public void onClick(View view){
-                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                startActivityForResult(intent, 100);
+        editTextPlantName = findViewById(R.id.nameDataText);
+        editTextSun = findViewById(R.id.sunDataText);
+        editTextWater = findViewById(R.id.waterDataText);
+        editTextTemp = findViewById(R.id.tempDataText);
+        editTextFertilizer = findViewById(R.id.fertilizerDataText);
+        editTextSoil = findViewById(R.id.soilDataText);
+
+        progressBar = findViewById(R.id.progressbar);
+        imageView = findViewById(R.id.imageview);
+
+        //
+        mFirebaseAuth = FirebaseAuth.getInstance();
+
+        FirebaseUser currentFirebaseUser = FirebaseAuth.getInstance().getCurrentUser() ;
+        String uId = currentFirebaseUser.getUid().toString();
+
+        // le pune dupa aia pe toate (pozele) in primul plantIdStorage -> nu e ok, ar trebui sa puna doar pozele de la aceeasi planta in folderu asta uploads/uid/plantidstorage
+        //String plantIdStorage = UUID.randomUUID().toString();
+        //mStorageRef = FirebaseStorage.getInstance().getReference("uploads/" + uId + "/" + plantIdStorage + "/");
+
+        // creates a new folder in uploads for each user
+        mStorageRef = FirebaseStorage.getInstance().getReference("uploads/" + uId + "/");
+        mDataBaseRef = FirebaseDatabase.getInstance().getReference("uploads");
+
+        chooseImageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openFileChooser();
+            }
+        });
+
+        saveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (uploadTask != null && uploadTask.isInProgress()) {
+                    Toast.makeText(NewPlantActivity.this, "Upload in progress", Toast.LENGTH_SHORT).show();
+                } else {
+                    uploadFile();
+                }
             }
         });
     }
 
-    protected void onActivityResult(int requestCode, int resultCode, Intent data){
+    private void openFileChooser(){
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(intent, PICK_IMAGE_REQUEST);
+    }
 
-        if(requestCode == 100){
-            Bitmap captureImage = (Bitmap) data.getExtras().get("data");
-            imageView.setImageBitmap(captureImage);
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK
+                && data != null && data.getData() != null){
+            imageUri = data.getData();
+
+            imageView.setImageURI(imageUri);
         }
-    }*/
+    }
+
+    //get extension of file (image)
+    private String getFileExtension(Uri uri){
+        ContentResolver cR = getContentResolver();
+        MimeTypeMap mime = MimeTypeMap.getSingleton();
+
+        return mime.getExtensionFromMimeType(cR.getType(uri));
+    }
+
+    private void uploadFile(){
+        if(imageUri != null){
+            StorageReference fileRef = mStorageRef.child(System.currentTimeMillis() + "." + getFileExtension(imageUri));
+
+            uploadTask = fileRef.putFile(imageUri)
+                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            Handler handler = new Handler();
+                            //delay pt reset la progressbar
+                            handler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    progressBar.setProgress(0);
+                                }
+                            }, 500);
+
+                            Toast.makeText(NewPlantActivity.this, "Upload succesfully", Toast.LENGTH_SHORT).show();
+
+                            fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                @Override
+                                public void onSuccess(Uri uri) {
+                                    Uri downloadUrl = uri;
+
+                                    String plantName = editTextPlantName.getText().toString().trim();
+                                    String sun = editTextSun.getText().toString().trim();
+                                    String water = editTextWater.getText().toString().trim();
+                                    String temp = editTextTemp.getText().toString().trim();
+                                    String fertilizer = editTextFertilizer.getText().toString().trim();
+                                    String soil = editTextSoil.getText().toString().trim();
+
+                                    Plants upload = new Plants(plantName, sun, water, temp, fertilizer, soil, downloadUrl.toString());
+
+                                    //String  uploadId = mDataBaseRef.push().getKey();
+                                    FirebaseUser currentFirebaseUser = FirebaseAuth.getInstance().getCurrentUser() ;
+                                    String uId = currentFirebaseUser.getUid().toString();
+                                    String plantIdDb = UUID.randomUUID().toString();
+                                    mDataBaseRef.child(uId).child(plantIdDb).setValue(upload);
+                                }
+                            });
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(NewPlantActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onProgress(UploadTask.TaskSnapshot snapshot) {
+                            //update progress bar
+                            double progress = (100.0 * snapshot.getBytesTransferred() / snapshot.getTotalByteCount());
+                            progressBar.setProgress((int)progress);
+                        }
+                    });
+        } else {
+            Toast.makeText(this, "No file selected", Toast.LENGTH_SHORT).show();
+        }
+    }
 }

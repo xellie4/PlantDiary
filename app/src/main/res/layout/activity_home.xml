@@ -27,7 +27,7 @@
         android:layout_height="195dp"
         android:layout_below="@+id/cb1"
         android:layout_marginStart="140dp"
-        android:layout_marginTop="-5dp"
+        android:layout_marginTop="9dp"
         android:background="@drawable/plantbutton2"
         android:elevation="4dp"
         android:textAlignment="gravity"
