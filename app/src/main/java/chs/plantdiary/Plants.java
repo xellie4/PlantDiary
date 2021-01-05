@@ -16,33 +16,40 @@ public class Plants {
     public Plants(String plantName, String sun, String water, String temp, String fertilizer, String soil,String imageUrl){
         if(plantName.trim().equals("")){
             this.plantName = "No name";
+        } else {
+            this.plantName = plantName;
         }
 
         if(sun.trim().equals("")){
             this.sun = "No data entered";
+        } else {
+            this.sun = sun;
         }
 
         if(water.trim().equals("")){
             this.water = "No data entered";
+        } else {
+            this.water = water;
         }
+
         if(temp.trim().equals("")){
             this.temp = "No data entered";
+        } else {
+            this.temp = temp;
         }
 
         if(fertilizer.trim().equals("")){
             this.fertilizer = "No data entered";
+        } else {
+            this.fertilizer = fertilizer;
         }
 
         if(soil.trim().equals("")){
             this.soil = "No data entered";
+        } else {
+            this.soil = soil;
         }
 
-        this.plantName = plantName;
-        this.sun = sun;
-        this.water = water;
-        this.temp = temp;
-        this.fertilizer = fertilizer;
-        this.soil = soil;
         this.imageUrl = imageUrl;
     }
 

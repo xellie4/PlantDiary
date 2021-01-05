@@ -3,14 +3,18 @@ package chs.plantdiary;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.FileProvider;
+
 import android.Manifest;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.Button;
@@ -32,12 +36,22 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
 
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import io.grpc.Context;
 import java.util.UUID;
 
 public class NewPlantActivity extends AppCompatActivity {
+
     private static final int PICK_IMAGE_REQUEST = 1;
+    private static final int CAMERA_REQUEST_CODE = 10;
+
     private Button chooseImageButton;
     private Button saveButton;
+    private Button captureImage;
+
     private EditText editTextPlantName;
     private EditText editTextSun;
     private EditText editTextWater;
@@ -50,9 +64,11 @@ public class NewPlantActivity extends AppCompatActivity {
 
     private StorageReference mStorageRef;
     private DatabaseReference mDataBaseRef;
-
     private StorageTask uploadTask;
     private FirebaseAuth mFirebaseAuth;
+    private String filePath;
+    private String currentPhotoPath;
+    private File photoFile = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +77,7 @@ public class NewPlantActivity extends AppCompatActivity {
 
         chooseImageButton = findViewById(R.id.chooseimagebutton);
         saveButton = findViewById(R.id.savebutton);
+        captureImage = findViewById(R.id.takepicture);
 
         editTextPlantName = findViewById(R.id.nameDataText);
         editTextSun = findViewById(R.id.sunDataText);
@@ -72,7 +89,6 @@ public class NewPlantActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.progressbar);
         imageView = findViewById(R.id.imageview);
 
-        //
         mFirebaseAuth = FirebaseAuth.getInstance();
 
         FirebaseUser currentFirebaseUser = FirebaseAuth.getInstance().getCurrentUser() ;
@@ -90,6 +106,13 @@ public class NewPlantActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 openFileChooser();
+            }
+        });
+
+        captureImage.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                dispatchTakePictureIntent();
             }
         });
 
@@ -115,6 +138,14 @@ public class NewPlantActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == CAMERA_REQUEST_CODE && resultCode == RESULT_OK){
+
+            File f = new File(currentPhotoPath);
+            imageUri = Uri.fromFile(f);
+            //filePath = imageUri.getPath();
+            //filePath = data.getData();
+            imageView.setImageURI(imageUri);
+        }
 
         if(requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK
                 && data != null && data.getData() != null){
@@ -132,64 +163,114 @@ public class NewPlantActivity extends AppCompatActivity {
         return mime.getExtensionFromMimeType(cR.getType(uri));
     }
 
-    private void uploadFile(){
-        if(imageUri != null){
-            StorageReference fileRef = mStorageRef.child(System.currentTimeMillis() + "." + getFileExtension(imageUri));
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
 
-            uploadTask = fileRef.putFile(imageUri)
-                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                            Handler handler = new Handler();
-                            //delay pt reset la progressbar
-                            handler.postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    progressBar.setProgress(0);
-                                }
-                            }, 500);
+        // Save a file: path for use with ACTION_VIEW intents
+        currentPhotoPath = image.getAbsolutePath();
+        return image;
+    }
 
-                            Toast.makeText(NewPlantActivity.this, "Upload succesfully", Toast.LENGTH_SHORT).show();
+    private void dispatchTakePictureIntent() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        // Ensure that there's a camera activity to handle the intent
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            // Create the File where the photo should go
 
-                            fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                @Override
-                                public void onSuccess(Uri uri) {
-                                    Uri downloadUrl = uri;
+            try {
+                photoFile = createImageFile();
+            } catch (IOException ex) {
+                // Error occurred while creating the File
 
-                                    String plantName = editTextPlantName.getText().toString().trim();
-                                    String sun = editTextSun.getText().toString().trim();
-                                    String water = editTextWater.getText().toString().trim();
-                                    String temp = editTextTemp.getText().toString().trim();
-                                    String fertilizer = editTextFertilizer.getText().toString().trim();
-                                    String soil = editTextSoil.getText().toString().trim();
-
-                                    Plants upload = new Plants(plantName, sun, water, temp, fertilizer, soil, downloadUrl.toString());
-
-                                    //String  uploadId = mDataBaseRef.push().getKey();
-                                    FirebaseUser currentFirebaseUser = FirebaseAuth.getInstance().getCurrentUser() ;
-                                    String uId = currentFirebaseUser.getUid().toString();
-                                    String plantIdDb = UUID.randomUUID().toString();
-                                    mDataBaseRef.child(uId).child(plantIdDb).setValue(upload);
-                                }
-                            });
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(NewPlantActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                        }
-                    })
-                    .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onProgress(UploadTask.TaskSnapshot snapshot) {
-                            //update progress bar
-                            double progress = (100.0 * snapshot.getBytesTransferred() / snapshot.getTotalByteCount());
-                            progressBar.setProgress((int)progress);
-                        }
-                    });
-        } else {
-            Toast.makeText(this, "No file selected", Toast.LENGTH_SHORT).show();
+            }
+            // Continue only if the File was successfully created
+            if (photoFile != null) {
+                Uri photoURI = FileProvider.getUriForFile(this,
+                        "chs.plantdiary.android.fileprovider",
+                        photoFile);
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                startActivityForResult(takePictureIntent, CAMERA_REQUEST_CODE);
+            }
         }
+    }
+
+    private void uploadFile(){
+        //String extension = "";
+        if(imageUri == null && photoFile == null) {
+            Toast.makeText(this, "No file selected", Toast.LENGTH_SHORT).show();
+            return;
+        } else if (imageUri == null) {
+            imageUri = Uri.fromFile(photoFile);
+            //extension = photoFile.getAbsolutePath().substring(photoFile.getAbsolutePath().lastIndexOf("."));
+        }
+        /*else if(photoFile == null){
+            extension =   "." + getFileExtension(imageUri);
+        }
+         */
+        //extension = photoFile.getAbsolutePath().substring(photoFile.getAbsolutePath().lastIndexOf("."));
+        //StorageReference fileRef = mStorageRef.child(System.currentTimeMillis() + extension);
+        StorageReference fileRef = mStorageRef.child(System.currentTimeMillis() + "plantdiary");
+                //StorageReference fileRef = mStorageRef.child(UUID.randomUUID().toString());
+        uploadTask = fileRef.putFile(imageUri)
+                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        Handler handler = new Handler();
+                        //delay pt reset la progressbar
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                progressBar.setProgress(0);
+                            }
+                        }, 500);
+
+                        Toast.makeText(NewPlantActivity.this, "Upload succesfully", Toast.LENGTH_SHORT).show();
+
+                        fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                            @Override
+                            public void onSuccess(Uri uri) {
+                                Uri downloadUrl = uri;
+
+                                String plantName = editTextPlantName.getText().toString().trim();
+                                String sun = editTextSun.getText().toString().trim();
+                                String water = editTextWater.getText().toString().trim();
+                                String temp = editTextTemp.getText().toString().trim();
+                                String fertilizer = editTextFertilizer.getText().toString().trim();
+                                String soil = editTextSoil.getText().toString().trim();
+
+                                Plants upload = new Plants(plantName, sun, water, temp, fertilizer, soil, downloadUrl.toString());
+
+                                //String  uploadId = mDataBaseRef.push().getKey();
+                                FirebaseUser currentFirebaseUser = FirebaseAuth.getInstance().getCurrentUser() ;
+                                String uId = currentFirebaseUser.getUid().toString();
+                                String plantIdDb = UUID.randomUUID().toString();
+                                mDataBaseRef.child(uId).child(plantIdDb).setValue(upload);
+                            }
+                        });
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(NewPlantActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onProgress(UploadTask.TaskSnapshot snapshot) {
+                        //update progress bar
+                        double progress = (100.0 * snapshot.getBytesTransferred() / snapshot.getTotalByteCount());
+                        progressBar.setProgress((int)progress);
+                    }
+                });
+
     }
 }
