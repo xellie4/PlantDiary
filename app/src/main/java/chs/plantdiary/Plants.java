@@ -1,5 +1,7 @@
 package chs.plantdiary;
 
+import com.google.firebase.database.Exclude;
+
 public class Plants {
     private String plantName;
     private String sun;
@@ -8,6 +10,7 @@ public class Plants {
     private String fertilizer;
     private String soil;
     private String imageUrl;
+    private String key;
 
     public Plants(){
         // empty constructor needed
@@ -116,4 +119,13 @@ public class Plants {
         this.imageUrl = imageUrl;
     }
 
+    @Exclude
+    public String getKey(){
+        return key;
+    }
+
+    @Exclude
+    public void setKey(String key){
+        this.key = key;
+    }
 }
