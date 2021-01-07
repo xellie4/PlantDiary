@@ -11,6 +11,8 @@ import android.Manifest;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -90,7 +92,11 @@ public class NewPlantActivity extends AppCompatActivity {
         editTextSoil = (EditText)findViewById(R.id.soilDataText);
 
         progressBar = (ProgressBar) findViewById(R.id.progressbar);
+        progressBar.setVisibility(View.INVISIBLE);
+        progressBar.setProgressTintList(ColorStateList.valueOf(Color.WHITE));
+
         imageView = (ImageView) findViewById(R.id.imageview);
+        imageView.setImageResource(R.drawable.loadimagefinal);
 
         mFirebaseAuth = FirebaseAuth.getInstance();
 
@@ -141,8 +147,7 @@ public class NewPlantActivity extends AppCompatActivity {
 
             File f = new File(currentPhotoPath);
             imageUri = Uri.fromFile(f);
-            //filePath = imageUri.getPath();
-            //filePath = data.getData();
+
             imageView.setImageURI(imageUri);
         }
 
@@ -245,6 +250,8 @@ public class NewPlantActivity extends AppCompatActivity {
         /* se genereaza titlul pozei care va fi urcat in baza de date*/
         StorageReference fileRef = mStorageRef.child(System.currentTimeMillis() + "plantdiary");
 
+        progressBar.setVisibility(View.VISIBLE);
+
         uploadTask = fileRef.putFile(imageUri)
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
@@ -312,6 +319,8 @@ public class NewPlantActivity extends AppCompatActivity {
         editTextFertilizer.setText("");
         editTextSoil.setText("");
 
-        imageView.setImageDrawable(null);
+        imageView.setImageResource(R.drawable.loadimagefinal);
+
+        progressBar.setVisibility(View.INVISIBLE);
     }
 }

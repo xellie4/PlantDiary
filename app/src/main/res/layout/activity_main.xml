@@ -34,6 +34,7 @@
         android:ems="15"
         android:gravity="center"
         android:hint="Email Address"
+        android:fontFamily="@font/proximnovaaltlight"
         android:importantForAutofill="no"
         android:inputType="textPersonName" />
 
@@ -50,6 +51,7 @@
         android:drawableLeft="@drawable/ic_action_lock"
         android:ems="15"
         android:gravity="center"
+        android:fontFamily="@font/proximnovaaltlight"
         android:hint="password"
         android:inputType="textPassword" />
 
@@ -75,6 +77,7 @@
         android:layout_marginTop="57dp"
         android:background="@null"
         android:text="New user? Register now"
+        android:fontFamily="@font/robotomedium"
         android:textColor="@color/teal3" />
 
 </RelativeLayout>
