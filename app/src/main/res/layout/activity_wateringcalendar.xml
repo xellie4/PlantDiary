@@ -4,19 +4,27 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg_plantdiary2"
+    android:background="@drawable/bg_plantdiary"
     app:title="@string/app_name"
     tools:context=".WateringCalendarActivity">
 
     <TextView
-        android:id="@+id/textrandom"
+        android:id="@+id/titletext"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="130dp"
+        android:layout_marginTop="30dp"
         android:layout_marginStart="50dp"
         android:text="watering calendar"
         android:textColor="@color/white"
         android:textSize="23dp"
         />
+
+    <CalendarView
+        android:id="@+id/simpleCalendarView"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@id/titletext"
+        android:layout_marginTop="75dp"
+        android:firstDayOfWeek="2"/>
 
 </RelativeLayout>

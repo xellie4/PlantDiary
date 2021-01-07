@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<font-family xmlns:android="http://schemas.android.com/apk/res/android">
+    <font
+        android:fontStyle="normal"
+        android:fontWeight="400"
+        android:font="@font/montserratextralight" />
+    <font
+        android:fontStyle="italic"
+        android:fontWeight="400"
+        android:font="@font/montserratlight" />
+    <font
+        android:fontStyle="normal"
+        android:fontWeight="400"
+        android:font="@font/montserratmedium" />
+    <font
+        android:fontStyle="italic"
+        android:fontWeight="400"
+        android:font="@font/montserratregular" />
+    <font
+        android:fontStyle="normal"
+        android:fontWeight="400"
+        android:font="@font/montserratthin" />
+    <font
+        android:fontStyle="italic"
+        android:fontWeight="400"
+        android:font="@font/robotolight" />
+    <font
+        android:fontStyle="normal"
+        android:fontWeight="400"
+        android:font="@font/robotomedium" />
+    <font
+        android:fontStyle="italic"
+        android:fontWeight="400"
+        android:font="@font/robotoregular" />
+    <font
+        android:fontStyle="italic"
+        android:fontWeight="400"
+        android:font="@font/robotothin" />
+    <font
+        android:fontStyle="normal"
+        android:fontWeight="400"
+        android:font="@font/proximnova" />
+    <font
+        android:fontStyle="italic"
+        android:fontWeight="400"
+        android:font="@font/proximnovaaltlight" />
+    <font
+        android:fontStyle="normal"
+        android:fontWeight="400"
+        android:font="@font/proximnovacondensedlight" />
+    <font
+        android:fontStyle="italic"
+        android:fontWeight="400"
+        android:font="@font/proximnovalight" />
+
+</font-family>

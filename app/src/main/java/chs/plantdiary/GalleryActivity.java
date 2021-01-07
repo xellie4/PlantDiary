@@ -4,7 +4,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import android.os.Bundle;
 import android.widget.Toast;
 
@@ -25,14 +24,14 @@ import java.util.List;
 
 public class GalleryActivity extends AppCompatActivity implements ImageAdapter.OnItemClickListener {
 
-    private RecyclerView mRecyclerView;
+    private RecyclerView mRecyclerView; //entry plante: numele plantei si poza pt fiecare planta din baza de date
     private ImageAdapter mAdapter;
 
     private FirebaseStorage mStorage;
     private DatabaseReference mDatabaseRef;
     private ValueEventListener mDBListener;
 
-    private List<Plants> mPlants;
+    private List<Plants> mPlants; //lista cu toate entry-urile de plante din baza de date
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +42,7 @@ public class GalleryActivity extends AppCompatActivity implements ImageAdapter.O
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
+        //instantiat la fiecare rulare a galeriei
         mPlants = new ArrayList<>();
 
         mAdapter = new ImageAdapter(GalleryActivity.this, mPlants);
@@ -59,8 +59,10 @@ public class GalleryActivity extends AppCompatActivity implements ImageAdapter.O
         mDBListener = mDatabaseRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                //clear lista pentru ca in caz de stergere, sa reia adaugarea in lista de be baza de date incepand cu o lista goala
                 mPlants.clear();
 
+                //aici baga key value din real time database
                 for(DataSnapshot postSnapshot : snapshot.getChildren()){
                     Plants plant = postSnapshot.getValue(Plants.class);
                     plant.setKey(postSnapshot.getKey());

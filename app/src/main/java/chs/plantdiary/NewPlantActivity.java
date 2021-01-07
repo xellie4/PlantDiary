@@ -3,6 +3,8 @@ package chs.plantdiary;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 
 import android.Manifest;
@@ -47,6 +49,7 @@ public class NewPlantActivity extends AppCompatActivity {
 
     private static final int PICK_IMAGE_REQUEST = 1;
     private static final int CAMERA_REQUEST_CODE = 10;
+    private static final int CAMERA_PERMISSION_CODE = 100;
 
     private Button chooseImageButton;
     private Button saveButton;
@@ -112,7 +115,9 @@ public class NewPlantActivity extends AppCompatActivity {
         captureImage.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                dispatchTakePictureIntent();
+
+                //dispatchTakePictureIntent();
+                askCameraPermissions();
             }
         });
 
@@ -126,6 +131,26 @@ public class NewPlantActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void askCameraPermissions() {
+        if(ContextCompat.checkSelfPermission(this,Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(this,new String[] {Manifest.permission.CAMERA}, CAMERA_PERMISSION_CODE);
+        }else {
+            dispatchTakePictureIntent();
+        }
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if(requestCode == CAMERA_PERMISSION_CODE){
+            if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                dispatchTakePictureIntent();
+            }else {
+                Toast.makeText(this, "Need permission to use camera.", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     private void openFileChooser(){
