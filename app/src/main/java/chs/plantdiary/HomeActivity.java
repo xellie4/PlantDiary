@@ -5,10 +5,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 
 import com.google.firebase.auth.FirebaseAuth;
 
+//homepage cu butoanele: add new plant, gallery si watering calendar
 public class HomeActivity extends AppCompatActivity {
     private Button addNewPlantButton;
     private Button galleryButton;
@@ -33,19 +33,6 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
-        /*issue: even if i rerun the app after logging in and not signing out, i will start on the register page but the account is already logged in,
-        so if i press on the register (main) screen: already an user? log in then it doesn't go to login screen, it does log in
-         */
-        logOutButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FirebaseAuth.getInstance().signOut();
-
-                Intent goToRegister = new Intent(HomeActivity.this, MainActivity.class);
-                startActivity(goToRegister);
-            }
-        });
-
         galleryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -62,5 +49,14 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
+        logOutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FirebaseAuth.getInstance().signOut();
+
+                Intent goToLogin = new Intent(HomeActivity.this, MainActivity.class);
+                startActivity(goToLogin);
+            }
+        });
     }
 }

@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
         loginButton = (Button) findViewById(R.id.loginButton);
         goToRegisterButton = (Button) findViewById(R.id.gotoregisterbutton);
 
-        /* check if already logged in */
+        /* verifica daca user-ul e deja logat, daca da -> redirectionat catre homepage layout */
         if (mFirebaseAuth.getCurrentUser() != null){
             Toast toast = Toast.makeText(MainActivity.this, "You are already logged in!", Toast.LENGTH_SHORT);
             toast.show();

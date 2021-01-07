@@ -38,7 +38,7 @@ public class GalleryActivity extends AppCompatActivity implements ImageAdapter.O
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gallery);
 
-        mRecyclerView = findViewById(R.id.recycler_view);
+        mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -84,11 +84,13 @@ public class GalleryActivity extends AppCompatActivity implements ImageAdapter.O
         //Toast.makeText(this, "Normal click at position: " + position, Toast.LENGTH_SHORT).show();
     }
 
+    //cand apasam pe edit plant din meniu
     @Override
     public void onEditPlantClick(int position) {
         Toast.makeText(this, "edit plant " + position, Toast.LENGTH_SHORT).show();
     }
 
+    //cand apasam pe delete plant din meniu
     @Override
     public void onDeletePlantClick(int position) {
         Plants selectedItem = mPlants.get(position);

@@ -12,9 +12,7 @@ public class Plants {
     private String imageUrl;
     private String key;
 
-    public Plants(){
-        // empty constructor needed
-    }
+    public Plants(){}
 
     public Plants(String plantName, String sun, String water, String temp, String fertilizer, String soil,String imageUrl){
         if(plantName.trim().equals("")){

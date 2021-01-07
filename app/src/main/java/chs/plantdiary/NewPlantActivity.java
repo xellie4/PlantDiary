@@ -78,33 +78,30 @@ public class NewPlantActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_newplant);
 
-        chooseImageButton = findViewById(R.id.chooseimagebutton);
-        saveButton = findViewById(R.id.savebutton);
-        captureImage = findViewById(R.id.takepicture);
+        chooseImageButton = (Button) findViewById(R.id.chooseimagebutton);
+        saveButton = (Button) findViewById(R.id.savebutton);
+        captureImage = (Button) findViewById(R.id.takepicture);
 
-        editTextPlantName = findViewById(R.id.nameDataText);
-        editTextSun = findViewById(R.id.sunDataText);
-        editTextWater = findViewById(R.id.waterDataText);
-        editTextTemp = findViewById(R.id.tempDataText);
-        editTextFertilizer = findViewById(R.id.fertilizerDataText);
-        editTextSoil = findViewById(R.id.soilDataText);
+        editTextPlantName = (EditText) findViewById(R.id.nameDataText);
+        editTextSun = (EditText)findViewById(R.id.sunDataText);
+        editTextWater = (EditText)findViewById(R.id.waterDataText);
+        editTextTemp = (EditText)findViewById(R.id.tempDataText);
+        editTextFertilizer = (EditText)findViewById(R.id.fertilizerDataText);
+        editTextSoil = (EditText)findViewById(R.id.soilDataText);
 
-        progressBar = findViewById(R.id.progressbar);
-        imageView = findViewById(R.id.imageview);
+        progressBar = (ProgressBar) findViewById(R.id.progressbar);
+        imageView = (ImageView) findViewById(R.id.imageview);
 
         mFirebaseAuth = FirebaseAuth.getInstance();
 
         FirebaseUser currentFirebaseUser = FirebaseAuth.getInstance().getCurrentUser() ;
         String uId = currentFirebaseUser.getUid().toString();
 
-        // le pune dupa aia pe toate (pozele) in primul plantIdStorage -> nu e ok, ar trebui sa puna doar pozele de la aceeasi planta in folderu asta uploads/uid/plantidstorage
-        //String plantIdStorage = UUID.randomUUID().toString();
-        //mStorageRef = FirebaseStorage.getInstance().getReference("uploads/" + uId + "/" + plantIdStorage + "/");
-
         // creates a new folder in uploads for each user
         mStorageRef = FirebaseStorage.getInstance().getReference("uploads/" + uId + "/");
         mDataBaseRef = FirebaseDatabase.getInstance().getReference("uploads");
 
+        /* buton pentru selectarea imaginii de pe telefon*/
         chooseImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -112,18 +109,20 @@ public class NewPlantActivity extends AppCompatActivity {
             }
         });
 
+        /* buton pentru pornire camera */
         captureImage.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
 
-                //dispatchTakePictureIntent();
                 askCameraPermissions();
             }
         });
 
+        /* salvare in baza de date a pozei si a datelor introduse */
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                /* cat timp e in progress upload-ul, nu se va intampla nimic daca se apasa save din nou*/
                 if (uploadTask != null && uploadTask.isInProgress()) {
                     Toast.makeText(NewPlantActivity.this, "Upload in progress", Toast.LENGTH_SHORT).show();
                 } else {
@@ -133,6 +132,30 @@ public class NewPlantActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        /* cazul in care poza e facuta cu camera */
+        if(requestCode == CAMERA_REQUEST_CODE && resultCode == RESULT_OK){
+
+            File f = new File(currentPhotoPath);
+            imageUri = Uri.fromFile(f);
+            //filePath = imageUri.getPath();
+            //filePath = data.getData();
+            imageView.setImageURI(imageUri);
+        }
+
+        /* cazul in care poza e luata de pe telefon */
+        if(requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK
+                && data != null && data.getData() != null){
+            imageUri = data.getData();
+
+            imageView.setImageURI(imageUri);
+        }
+    }
+
+    /* verificare daca exista permisiune pentru folosirea camerei */
     private void askCameraPermissions() {
         if(ContextCompat.checkSelfPermission(this,Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED){
             ActivityCompat.requestPermissions(this,new String[] {Manifest.permission.CAMERA}, CAMERA_PERMISSION_CODE);
@@ -142,6 +165,7 @@ public class NewPlantActivity extends AppCompatActivity {
 
     }
 
+    /* daca nu exista permisiune pentru folosirea camerei, se va cere aceasta permisiune  */
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if(requestCode == CAMERA_PERMISSION_CODE){
@@ -158,26 +182,6 @@ public class NewPlantActivity extends AppCompatActivity {
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(intent, PICK_IMAGE_REQUEST);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == CAMERA_REQUEST_CODE && resultCode == RESULT_OK){
-
-            File f = new File(currentPhotoPath);
-            imageUri = Uri.fromFile(f);
-            //filePath = imageUri.getPath();
-            //filePath = data.getData();
-            imageView.setImageURI(imageUri);
-        }
-
-        if(requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK
-                && data != null && data.getData() != null){
-            imageUri = data.getData();
-
-            imageView.setImageURI(imageUri);
-        }
     }
 
     //get extension of file (image)
@@ -227,23 +231,20 @@ public class NewPlantActivity extends AppCompatActivity {
         }
     }
 
+    /* incarcare in baza de date a pozei si informatiilor */
     private void uploadFile(){
-        //String extension = "";
+
+        /* daca nu e selectat nicio imagine */
         if(imageUri == null && photoFile == null) {
             Toast.makeText(this, "No file selected", Toast.LENGTH_SHORT).show();
             return;
-        } else if (imageUri == null) {
+        } else if (imageUri == null) {  /* in cazul in care poza e facuta cu camera, imageUri va fi null, dar din calea unde e stocata poza (pe telefon) se poate crea un imageUri */
             imageUri = Uri.fromFile(photoFile);
-            //extension = photoFile.getAbsolutePath().substring(photoFile.getAbsolutePath().lastIndexOf("."));
         }
-        /*else if(photoFile == null){
-            extension =   "." + getFileExtension(imageUri);
-        }
-         */
-        //extension = photoFile.getAbsolutePath().substring(photoFile.getAbsolutePath().lastIndexOf("."));
-        //StorageReference fileRef = mStorageRef.child(System.currentTimeMillis() + extension);
+
+        /* se genereaza titlul pozei care va fi urcat in baza de date*/
         StorageReference fileRef = mStorageRef.child(System.currentTimeMillis() + "plantdiary");
-                //StorageReference fileRef = mStorageRef.child(UUID.randomUUID().toString());
+
         uploadTask = fileRef.putFile(imageUri)
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
