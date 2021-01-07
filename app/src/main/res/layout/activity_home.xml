@@ -59,6 +59,7 @@
         android:elevation="4dp"
         android:text="log out"
         android:textColor="@color/whitelessopacity"
-        android:textSize="17sp" />
+        android:textSize="17sp"
+        android:fontFamily="@font/robotomedium"/>
 
 </RelativeLayout>

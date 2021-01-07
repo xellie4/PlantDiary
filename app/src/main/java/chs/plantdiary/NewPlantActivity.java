@@ -279,6 +279,9 @@ public class NewPlantActivity extends AppCompatActivity {
                                 String uId = currentFirebaseUser.getUid().toString();
                                 String plantIdDb = UUID.randomUUID().toString();
                                 mDataBaseRef.child(uId).child(plantIdDb).setValue(upload);
+
+                                /* sterge datele din edittext si poza dupa ce acestea au fost incarcate in baza de date */
+                                clearEditTextsAndImageView();
                             }
                         });
                     }
@@ -295,8 +298,20 @@ public class NewPlantActivity extends AppCompatActivity {
                         //update progress bar
                         double progress = (100.0 * snapshot.getBytesTransferred() / snapshot.getTotalByteCount());
                         progressBar.setProgress((int)progress);
+
                     }
                 });
 
+    }
+
+    private void clearEditTextsAndImageView(){
+        editTextPlantName.setText("");
+        editTextSun.setText("");
+        editTextWater.setText("");
+        editTextTemp.setText("");
+        editTextFertilizer.setText("");
+        editTextSoil.setText("");
+
+        imageView.setImageDrawable(null);
     }
 }
