@@ -9,12 +9,13 @@ public class Plants {
     private String temp;
     private String fertilizer;
     private String soil;
+    private String lastTimeWateredDate;
     private String imageUrl;
     private String key;
 
     public Plants(){}
 
-    public Plants(String plantName, String sun, String water, String temp, String fertilizer, String soil,String imageUrl){
+    public Plants(String plantName, String sun, String water, String temp, String fertilizer, String soil, String lastTimeWateredDate, String imageUrl){
         if(plantName.trim().equals("")){
             this.plantName = "No name";
         } else {
@@ -51,6 +52,7 @@ public class Plants {
             this.soil = soil;
         }
 
+        this.lastTimeWateredDate = lastTimeWateredDate;
         this.imageUrl = imageUrl;
     }
 
@@ -106,6 +108,15 @@ public class Plants {
 
     public void setSoil(String soil){
         this.soil = soil;
+    }
+
+    //getter and setter for date
+    public String getDate(){
+        return lastTimeWateredDate;
+    }
+
+    public void setDate(String lastTimeWateredDate){
+        this.lastTimeWateredDate = lastTimeWateredDate;
     }
 
     //getter and  setter for image url

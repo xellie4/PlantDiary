@@ -1,0 +1,350 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/bg_plantdiary_plain"
+        tools:context=".GalleryActivity"
+        android:orientation="vertical"
+        android:visibility="visible" >
+
+        <RelativeLayout
+            android:id="@+id/FirstRelativeLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@+id/newplanttitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="35dp"
+                android:text="EDIT PLANT"
+                android:fontFamily="@font/montserratlight"
+                android:layout_marginStart="30dp"
+                android:textColor="@color/white"
+                android:textSize="35dp" />
+
+            <Button
+                android:id="@+id/savebutton"
+                android:layout_width="70dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="35dp"
+                android:layout_marginStart="75dp"
+                android:layout_toEndOf="@+id/newplanttitle"
+                android:text="DONE"
+                android:background="@drawable/custom_button2"
+                android:textColor="@color/white"
+                android:textSize="20dp" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/buttonsSecondLayout"
+            android:layout_below="@+id/soilLayout"
+            android:layout_marginTop="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:visibility="visible">
+
+            <ProgressBar
+                android:id="@+id/progressbar"
+                android:layout_width="300dp"
+                android:layout_height="30dp"
+                android:layout_centerHorizontal="true"
+                style="@style/Widget.AppCompat.ProgressBar.Horizontal"  />
+        </RelativeLayout>
+
+        <ImageView
+            android:id="@+id/imageview"
+            android:layout_width="match_parent"
+            android:layout_height="500dp"
+            android:layout_below="@+id/FirstRelativeLayout"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp" />
+
+        <RelativeLayout
+            android:id="@+id/nameLayout"
+            android:layout_below="@+id/imageview"
+            android:layout_marginTop="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:orientation="horizontal"
+            android:visibility="visible">
+
+            <ImageView
+                android:id="@+id/nameImage"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_alignParentStart="true"
+                android:layout_gravity="center"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="5dp"
+                android:src="@drawable/plant_icon2" />
+
+            <TextView
+                android:id="@+id/nameText"
+                android:layout_width="140dp"
+                android:layout_height="match_parent"
+                android:layout_toEndOf="@id/nameImage"
+                android:gravity="center_vertical"
+                android:textColor="@color/white"
+                android:text="Plant name"
+                android:fontFamily="@font/robotolight"
+                android:textSize="23dp" />
+
+            <EditText
+                android:id="@+id/nameDataText"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentBottom="true"
+                android:layout_marginEnd="10dp"
+                android:background="#32000000"
+                android:layout_toEndOf="@id/nameText"
+                android:gravity="center"
+                android:hint="enter information"
+                android:importantForAutofill="no"
+                android:fontFamily="@font/robotothin"
+                android:textColor="@color/white"
+                android:textSize="23dp" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/sunLayout"
+            android:layout_below="@+id/nameLayout"
+            android:layout_marginTop="15dp"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:orientation="horizontal"
+            android:visibility="visible">
+
+            <ImageView
+                android:id="@+id/sunImage"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_alignParentStart="true"
+                android:layout_gravity="center"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="5dp"
+                android:src="@drawable/sun_icon" />
+
+            <TextView
+                android:id="@+id/sunText"
+                android:layout_width="140dp"
+                android:layout_height="match_parent"
+                android:layout_toEndOf="@id/sunImage"
+                android:gravity="center_vertical"
+                android:textColor="@color/white"
+                android:text="Sunlight"
+                android:fontFamily="@font/robotolight"
+                android:textSize="23dp" />
+
+            <EditText
+                android:id="@+id/sunDataText"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentBottom="true"
+                android:layout_marginEnd="10dp"
+                android:background="#32000000"
+                android:layout_toEndOf="@id/sunText"
+                android:gravity="center"
+                android:hint="enter information"
+                android:fontFamily="@font/robotothin"
+                android:importantForAutofill="no"
+                android:textColor="@color/white"
+                android:textSize="23dp" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/waterLayout"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_below="@+id/sunLayout"
+            android:layout_marginTop="15dp"
+            android:orientation="horizontal"
+            android:visibility="visible">
+
+            <ImageView
+                android:id="@+id/waterImage"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_alignParentStart="true"
+                android:layout_gravity="center"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="5dp"
+                android:src="@drawable/water_icon" />
+
+            <TextView
+                android:id="@+id/waterText"
+                android:layout_width="140dp"
+                android:layout_height="match_parent"
+                android:layout_toEndOf="@id/waterImage"
+                android:gravity="center_vertical"
+                android:text="Water"
+                android:fontFamily="@font/robotolight"
+                android:textColor="@color/white"
+                android:textSize="23dp" />
+
+            <EditText
+                android:id="@+id/waterDataText"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentBottom="true"
+                android:layout_marginEnd="10dp"
+                android:layout_toEndOf="@id/waterText"
+                android:gravity="center"
+                android:background="#32000000"
+                android:hint="enter information"
+                android:fontFamily="@font/robotothin"
+                android:textColor="@color/white"
+                android:textSize="23dp" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/tempLayout"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_below="@+id/sunLayout"
+            android:layout_marginTop="15dp"
+            android:orientation="horizontal"
+            android:visibility="visible">
+
+            <ImageView
+                android:id="@+id/tempImage"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_alignParentStart="true"
+                android:layout_gravity="center"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="5dp"
+                android:src="@drawable/temp_icon" />
+
+            <TextView
+                android:id="@+id/tempText"
+                android:layout_width="140dp"
+                android:layout_height="match_parent"
+                android:layout_toEndOf="@id/tempImage"
+                android:gravity="center_vertical"
+                android:text="Room temp"
+                android:fontFamily="@font/robotolight"
+                android:textColor="@color/white"
+                android:textSize="23dp" />
+
+            <EditText
+                android:id="@+id/tempDataText"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentBottom="true"
+                android:layout_marginEnd="10dp"
+                android:background="#32000000"
+                android:layout_toEndOf="@id/tempText"
+                android:gravity="center"
+                android:hint="enter information"
+                android:fontFamily="@font/robotothin"
+                android:textColor="@color/white"
+                android:textSize="23dp" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/fertilizerLayout"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_below="@+id/roomLayout"
+            android:layout_marginTop="15dp"
+            android:orientation="horizontal"
+            android:visibility="visible">
+
+            <ImageView
+                android:id="@+id/fertilizerImage"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="10dp"
+                android:gravity="center_vertical"
+                android:layout_marginEnd="5dp"
+                android:src="@drawable/fertilizer_icon" />
+
+            <TextView
+                android:id="@+id/fertilizerText"
+                android:layout_width="140dp"
+                android:layout_height="match_parent"
+                android:layout_toEndOf="@id/fertilizerImage"
+                android:gravity="center_vertical"
+                android:text="Fertilizer"
+                android:fontFamily="@font/robotolight"
+                android:textColor="@color/white"
+                android:textSize="23dp" />
+
+            <EditText
+                android:id="@+id/fertilizerDataText"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentBottom="true"
+                android:layout_marginEnd="10dp"
+                android:layout_toEndOf="@id/fertilizerText"
+                android:gravity="center"
+                android:background="#32000000"
+                android:hint="enter information"
+                android:fontFamily="@font/robotothin"
+                android:textColor="@color/white"
+                android:textSize="23dp" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/soilLayout"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_below="@+id/roomLayout"
+            android:layout_marginTop="15dp"
+            android:orientation="horizontal"
+            android:visibility="visible">
+
+            <ImageView
+                android:id="@+id/soilImage"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="10dp"
+                android:gravity="center_vertical"
+                android:layout_marginEnd="5dp"
+                android:src="@drawable/soil_icon" />
+
+            <TextView
+                android:id="@+id/soilText"
+                android:layout_width="140dp"
+                android:layout_height="match_parent"
+                android:layout_toEndOf="@id/soilImage"
+                android:gravity="center_vertical"
+                android:text="Soil mixture"
+                android:fontFamily="@font/robotolight"
+                android:textColor="@color/white"
+                android:textSize="23dp" />
+
+            <EditText
+                android:id="@+id/soilDataText"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentBottom="true"
+                android:layout_marginEnd="10dp"
+                android:layout_toEndOf="@id/soilText"
+                android:gravity="center"
+                android:background="#32000000"
+                android:hint="enter information"
+                android:fontFamily="@font/robotothin"
+                android:textColor="@color/white"
+                android:textSize="23dp" />
+        </RelativeLayout>
+
+    </LinearLayout>
+</ScrollView>

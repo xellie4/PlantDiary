@@ -278,8 +278,9 @@ public class NewPlantActivity extends AppCompatActivity {
                                 String temp = editTextTemp.getText().toString().trim();
                                 String fertilizer = editTextFertilizer.getText().toString().trim();
                                 String soil = editTextSoil.getText().toString().trim();
+                                String lastTimeWateredDate = "not watered yet";
 
-                                Plants upload = new Plants(plantName, sun, water, temp, fertilizer, soil, downloadUrl.toString());
+                                Plants upload = new Plants(plantName, sun, water, temp, fertilizer, soil, lastTimeWateredDate, downloadUrl.toString());
 
                                 //String  uploadId = mDataBaseRef.push().getKey();
                                 FirebaseUser currentFirebaseUser = FirebaseAuth.getInstance().getCurrentUser() ;

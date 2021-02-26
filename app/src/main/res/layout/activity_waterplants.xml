@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_plantdiary"
+    app:title="@string/app_name"
+    tools:context=".WaterPlantActivity">
+
+    <TextView
+        android:id="@+id/waterplant"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:layout_marginStart="50dp"
+        android:text="Water a plant!"
+        android:textColor="@color/white"
+        android:textSize="30dp"
+        />
+
+    <TextView
+        android:id="@+id/chooseplant"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:layout_marginStart="25dp"
+        android:layout_below="@+id/waterplant"
+        android:text="Choose a plant you want to water:"
+        android:textColor="@color/white"
+        android:textSize="20dp"
+        />
+
+    <Spinner
+        android:id="@+id/plants_spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/chooseplant"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="50dp"/>
+
+    <TextView
+        android:id="@+id/lasttimewatered"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:layout_marginStart="25dp"
+        android:layout_below="@+id/planets_spinner"
+        android:text="Last time watered:"
+        android:textColor="@color/white"
+        android:textSize="20dp"
+        />
+
+    <TextView
+        android:id="@+id/datelasttimewatered"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:layout_marginStart="25dp"
+        android:layout_below="@+id/lasttimewatered"
+        android:text=" date "
+        android:textColor="@color/white"
+        android:textSize="20dp"
+        />
+
+    <Button
+        android:id="@+id/waterButton"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="35dp"
+        android:layout_marginStart="300dp"
+        android:text="DONE"
+        android:layout_below="@+id/datelasttimewatered"
+        android:background="@drawable/custom_button2"
+        android:textColor="@color/white"
+        android:textSize="20dp" />
+
+</RelativeLayout>

@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -18,6 +19,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +44,7 @@ public class GalleryActivity extends AppCompatActivity implements ImageAdapter.O
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        //instantiat la fiecare rulare a galeriei
+        //lista noua la fiecare intrare in galerie, de ex cand stergi => sa se actualizeze
         mPlants = new ArrayList<>();
 
         mAdapter = new ImageAdapter(GalleryActivity.this, mPlants);
@@ -54,7 +56,7 @@ public class GalleryActivity extends AppCompatActivity implements ImageAdapter.O
         String uId = currentFirebaseUser.getUid().toString();
 
         mDatabaseRef = FirebaseDatabase.getInstance().getReference("uploads/" + uId + "/");
-        mStorage= FirebaseStorage.getInstance();
+        mStorage = FirebaseStorage.getInstance();
 
         mDBListener = mDatabaseRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -66,6 +68,8 @@ public class GalleryActivity extends AppCompatActivity implements ImageAdapter.O
                 for(DataSnapshot postSnapshot : snapshot.getChildren()){
                     Plants plant = postSnapshot.getValue(Plants.class);
                     plant.setKey(postSnapshot.getKey());
+
+                    Log.d("TAG", "plant.key " + plant.getKey() );
                     mPlants.add(plant);
                 }
 
@@ -87,7 +91,9 @@ public class GalleryActivity extends AppCompatActivity implements ImageAdapter.O
     //cand apasam pe edit plant din meniu
     @Override
     public void onEditPlantClick(int position) {
-        Toast.makeText(this, "edit plant " + position, Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, "edit plant " + position, Toast.LENGTH_SHORT).show();
+        //Plants selectedItem = mPlants.get(position);
+
     }
 
     //cand apasam pe delete plant din meniu

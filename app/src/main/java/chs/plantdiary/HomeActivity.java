@@ -44,7 +44,7 @@ public class HomeActivity extends AppCompatActivity {
         wateringCalendarButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent goToHomePage = new Intent(HomeActivity.this, WateringCalendarActivity.class);
+                Intent goToHomePage = new Intent(HomeActivity.this, WaterPlantActivity.class);
                 startActivity(goToHomePage);
             }
         });

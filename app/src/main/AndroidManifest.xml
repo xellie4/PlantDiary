@@ -24,7 +24,7 @@
         <activity android:name="chs.plantdiary.RegisterActivity" />
         <activity android:name="chs.plantdiary.HomeActivity" />
         <activity android:name="chs.plantdiary.GalleryActivity" />
-        <activity android:name="chs.plantdiary.WateringCalendarActivity" />
+        <activity android:name="chs.plantdiary.WaterPlantActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
