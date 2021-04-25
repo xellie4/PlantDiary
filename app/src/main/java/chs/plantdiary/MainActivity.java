@@ -38,8 +38,7 @@ public class MainActivity extends AppCompatActivity {
 
         /* verifica daca user-ul e deja logat, daca da -> redirectionat catre homepage layout */
         if (mFirebaseAuth.getCurrentUser() != null){
-            Toast toast = Toast.makeText(MainActivity.this, "You are already logged in!", Toast.LENGTH_SHORT);
-            toast.show();
+            Toast.makeText(MainActivity.this, "You are already logged in!", Toast.LENGTH_SHORT).show();
 
             Intent goToLoggedInActivity = new Intent(MainActivity.this, HomeActivity.class);
             startActivity(goToLoggedInActivity);
@@ -56,8 +55,8 @@ public class MainActivity extends AppCompatActivity {
                     username.requestFocus();
                     password.setError("Please provide a password");
                     password.requestFocus();
-                    Toast toast = Toast.makeText(MainActivity.this, "Fields are empty!", Toast.LENGTH_SHORT);
-                    toast.show();
+
+                    Toast.makeText(MainActivity.this, "Fields are empty!", Toast.LENGTH_SHORT).show();
                 }
                 if(email.isEmpty() && !pass.isEmpty()){
                     username.setError("Please provide an email address");
@@ -73,14 +72,13 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if(task.isSuccessful()){
-                                Toast toast = Toast.makeText(MainActivity.this, "Logged in successfully!", Toast.LENGTH_SHORT);
-                                toast.show();
+                                Toast.makeText(MainActivity.this, "Logged in successfully!", Toast.LENGTH_SHORT).show();
+
                                 Intent goToLoggedInActivity = new Intent(MainActivity.this, HomeActivity.class);
                                 startActivity(goToLoggedInActivity);
                             }
                             else {
-                                Toast toast = Toast.makeText(MainActivity.this, "Login failed, please try again!", Toast.LENGTH_SHORT);
-                                toast.show();
+                                Toast.makeText(MainActivity.this, "Login failed, please try again!", Toast.LENGTH_SHORT).show();
                             }
                         }
                     });

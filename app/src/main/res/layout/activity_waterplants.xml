@@ -45,7 +45,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
         android:layout_marginStart="25dp"
-        android:layout_below="@+id/planets_spinner"
+        android:layout_below="@+id/plants_spinner"
         android:text="Last time watered:"
         android:textColor="@color/white"
         android:textSize="20dp"
@@ -68,12 +68,12 @@
         android:layout_width="70dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="35dp"
+        android:layout_marginTop="135dp"
         android:layout_marginStart="300dp"
-        android:text="DONE"
+        android:text="Water plant"
         android:layout_below="@+id/datelasttimewatered"
         android:background="@drawable/custom_button2"
-        android:textColor="@color/white"
+        android:textColor="@color/teal2"
         android:textSize="20dp" />
 
 </RelativeLayout>

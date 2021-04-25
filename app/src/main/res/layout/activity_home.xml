@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg_plantdiary2"
+    android:background="@color/bgidea1"
     app:title="@string/app_name"
     tools:context=".HomeActivity">
 
@@ -58,7 +58,7 @@
         android:background="@android:color/transparent"
         android:elevation="4dp"
         android:text="log out"
-        android:textColor="@color/whitelessopacity"
+        android:textColor="@color/teal3"
         android:textSize="17sp"
         android:fontFamily="@font/robotomedium"/>
 

@@ -13,6 +13,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
 
 public class RegisterActivity extends AppCompatActivity {
@@ -42,8 +43,7 @@ public class RegisterActivity extends AppCompatActivity {
                 String pass = password.getText().toString();
 
                 if(email.isEmpty() && pass.isEmpty()){
-                    Toast toast = Toast.makeText(RegisterActivity.this, "Fields are empty!", Toast.LENGTH_SHORT);
-                    toast.show();
+                    Toast.makeText(RegisterActivity.this, "Fields are empty!", Toast.LENGTH_SHORT).show();
                 }
                 if(email.isEmpty()){
                     username.setError("Please provide a username");
@@ -61,12 +61,15 @@ public class RegisterActivity extends AppCompatActivity {
                                 @Override
                                 public void onComplete(@NonNull Task<AuthResult> task) {
                                     if(!task.isSuccessful()){
-                                        Toast toast = Toast.makeText(RegisterActivity.this, "Registration failed", Toast.LENGTH_SHORT);
-                                        toast.show();
+                                    /*
+                                        if (task.getException() instanceof FirebaseAuthUserCollisionException) {
+                                            Toast.makeText(RegisterActivity.this, "User with this email already exist.", Toast.LENGTH_SHORT).show();
+                                        } else {*/
+                                            Toast.makeText(RegisterActivity.this, "Registration failed" + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                        //}
                                     }
                                     else {
-                                        Toast toast = Toast.makeText(RegisterActivity.this, "Registration successful!", Toast.LENGTH_SHORT);
-                                        toast.show();
+                                        Toast.makeText(RegisterActivity.this, "Registration successful!", Toast.LENGTH_SHORT).show();
 
                                         Intent goToLoggedInActivity = new Intent(RegisterActivity.this, HomeActivity.class);
                                         startActivity(goToLoggedInActivity);
@@ -75,8 +78,7 @@ public class RegisterActivity extends AppCompatActivity {
                             });
                 }
                 else{
-                    Toast toast = Toast.makeText(RegisterActivity.this, "Error Occurred! Please, try again!", Toast.LENGTH_SHORT);
-                    toast.show();
+                    Toast.makeText(RegisterActivity.this, "Error Occurred! Please, try again!", Toast.LENGTH_SHORT).show();
                 }
             }
         });

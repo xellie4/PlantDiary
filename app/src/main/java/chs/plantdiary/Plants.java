@@ -52,6 +52,7 @@ public class Plants {
             this.soil = soil;
         }
 
+        //actual date when water buton is pressed in watering activity
         this.lastTimeWateredDate = lastTimeWateredDate;
         this.imageUrl = imageUrl;
     }

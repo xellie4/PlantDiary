@@ -8,7 +8,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/bg_plantdiary_plain"
+        android:background="@color/teal3"
         tools:context=".NewPlantActivity"
         android:orientation="vertical"
         android:visibility="visible" >
@@ -39,7 +39,7 @@
                 android:layout_toEndOf="@+id/newplanttitle"
                 android:text="DONE"
                 android:background="@drawable/custom_button2"
-                android:textColor="@color/white"
+                android:textColor="@color/teal3"
                 android:textSize="20dp" />
         </RelativeLayout>
 
@@ -85,7 +85,7 @@
                 android:layout_marginStart="40dp"
                 android:text="Choose Image"
                 android:background="@drawable/custom_button2"
-                android:textColor="@color/white"
+                android:textColor="@color/teal3"
                 android:textSize="20dp" />
 
             <Button
@@ -98,7 +98,7 @@
                 android:layout_gravity="center"
                 android:text="Take Image"
                 android:background="@drawable/custom_button2"
-                android:textColor="@color/white"
+                android:textColor="@color/teal3"
                 android:textSize="20dp" />
         </RelativeLayout>
 
@@ -340,6 +340,7 @@
             android:layout_height="30dp"
             android:layout_below="@+id/roomLayout"
             android:layout_marginTop="15dp"
+            android:layout_marginBottom="50dp"
             android:orientation="horizontal"
             android:visibility="visible">
 
