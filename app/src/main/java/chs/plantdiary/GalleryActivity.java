@@ -88,14 +88,6 @@ public class GalleryActivity extends AppCompatActivity implements ImageAdapter.O
         //Toast.makeText(this, "Normal click at position: " + position, Toast.LENGTH_SHORT).show();
     }
 
-    //cand apasam pe edit plant din meniu
-    @Override
-    public void onEditPlantClick(int position) {
-        //Toast.makeText(this, "edit plant " + position, Toast.LENGTH_SHORT).show();
-        //Plants selectedItem = mPlants.get(position);
-
-    }
-
     //cand apasam pe delete plant din meniu
     @Override
     public void onDeletePlantClick(int position) {

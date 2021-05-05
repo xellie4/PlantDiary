@@ -63,15 +63,16 @@ public class WaterPlantActivity extends AppCompatActivity {
         mDBListener = mDatabaseRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                //clear lista pentru ca in caz de stergere, sa reia adaugarea in lista de be baza de date incepand cu o lista goala
+                //la fiecare fetch sa curete listele (in caz ca se sterg date)
                 mPlantNames.clear();
                 mPlantDates.clear();
 
-                //aici baga key value din real time database
+                // aici baga key value din real time database
                 for(DataSnapshot postSnapshot : snapshot.getChildren()){
                     String plantName;
                     String plantWaterDate;
 
+                    // ia valoarea din key pentru campul plantName si date
                     plantName = postSnapshot.child("plantName").getValue(String.class);
                     plantWaterDate = postSnapshot.child("date").getValue(String.class);
 

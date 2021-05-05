@@ -85,10 +85,9 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
         @Override
         public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
             menu.setHeaderTitle("Choose an option");
-            MenuItem doWhatever = menu.add(Menu.NONE, 1, 1, "Edit plant");
-            MenuItem delete = menu.add(Menu.NONE, 2, 2, "Delete plant");
 
-            doWhatever.setOnMenuItemClickListener(this);
+            MenuItem delete = menu.add(Menu.NONE, 1, 1, "Delete plant");
+
             delete.setOnMenuItemClickListener(this);
         }
 
@@ -100,9 +99,6 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
                 if(position != RecyclerView.NO_POSITION){
                     switch(item.getItemId()){
                         case 1:
-                            mListener.onEditPlantClick(position);
-                            return true;
-                        case 2:
                             mListener.onDeletePlantClick(position);
                             return true;
                     }
@@ -115,7 +111,6 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
 
     public interface OnItemClickListener {
         void onItemClick(int position);
-        void onEditPlantClick(int position);
         void onDeletePlantClick(int position);
     }
 
