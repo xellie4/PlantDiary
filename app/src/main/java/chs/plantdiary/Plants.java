@@ -10,12 +10,13 @@ public class Plants {
     private String fertilizer;
     private String soil;
     private String lastTimeWateredDate;
+    private String moistureLevel;
     private String imageUrl;
     private String key;
 
     public Plants(){}
 
-    public Plants(String plantName, String sun, String water, String temp, String fertilizer, String soil, String lastTimeWateredDate, String imageUrl){
+    public Plants(String plantName, String sun, String water, String temp, String fertilizer, String soil, String lastTimeWateredDate, String moistureLevel, String imageUrl){
         if(plantName.trim().equals("")){
             this.plantName = "No name";
         } else {
@@ -52,8 +53,8 @@ public class Plants {
             this.soil = soil;
         }
 
-        //actual date when water buton is pressed in watering activity
         this.lastTimeWateredDate = lastTimeWateredDate;
+        this.moistureLevel = moistureLevel;
         this.imageUrl = imageUrl;
     }
 
@@ -111,13 +112,22 @@ public class Plants {
         this.soil = soil;
     }
 
-    //getter and setter for date
+    //getter and setter for watering date
     public String getDate(){
         return lastTimeWateredDate;
     }
 
     public void setDate(String lastTimeWateredDate){
         this.lastTimeWateredDate = lastTimeWateredDate;
+    }
+
+    //getter and setter for moisture level
+    public String getMoistureLevel(){
+        return moistureLevel;
+    }
+
+    public void setMoistureLevel(String moistureLevel){
+        this.moistureLevel = moistureLevel;
     }
 
     //getter and  setter for image url

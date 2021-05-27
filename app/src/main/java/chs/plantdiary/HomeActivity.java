@@ -8,7 +8,7 @@ import android.widget.Button;
 
 import com.google.firebase.auth.FirebaseAuth;
 
-//homepage cu butoanele: add new plant, gallery si watering calendar
+//homepage cu butoanele: add new plant, gallery, watering calendar si scan for available devices
 public class HomeActivity extends AppCompatActivity {
     private Button addNewPlantButton;
     private Button galleryButton;
@@ -24,6 +24,7 @@ public class HomeActivity extends AppCompatActivity {
         galleryButton = (Button) findViewById(R.id.cb2);
         wateringCalendarButton = (Button) findViewById(R.id.cb3);
         logOutButton = (Button) findViewById(R.id.logout_button);
+
 
         addNewPlantButton.setOnClickListener(new View.OnClickListener() {
             @Override

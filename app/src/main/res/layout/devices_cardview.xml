@@ -1,72 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/bg_plantdiary_plain"
-    app:title="@string/app_name"
-    tools:context=".WaterPlantActivity">
-
-    <TextView
-        android:id="@+id/waterplant"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="35dp"
-        android:layout_marginStart="50dp"
-        android:text="Connected devices"
-        android:layout_centerHorizontal="true"
-        android:textColor="@color/white"
-        android:fontFamily="@font/montserratlight"
-        android:textSize="30dp"
-        />
-
-    <RelativeLayout
-        android:id="@+id/buttons_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="25dp"
-        android:layout_below="@+id/waterplant"
-        android:orientation="vertical"
-        android:layout_marginStart="10dp"
-        android:background="@null" >
-
-        <Button
-            android:id="@+id/refresh_button"
-            android:layout_width="120dp"
-            android:layout_height="70dp"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/custom_button2"
-            android:elevation="4dp"
-            android:fontFamily="@font/robotomedium"
-            android:gravity="center"
-            android:text="Refresh data"
-            android:textColor="@color/teal3"
-            android:textSize="18sp" />
-
-        <Button
-            android:id="@+id/scan_devices_button"
-            android:layout_width="120dp"
-            android:layout_height="70dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/custom_button2"
-            android:layout_toEndOf="@+id/refresh_button"
-            android:elevation="4dp"
-            android:fontFamily="@font/robotomedium"
-            android:gravity="center"
-            android:text="SCAN AVAILABLE DEVICES"
-            android:textColor="@color/teal3"
-            android:textSize="18sp" />
-    </RelativeLayout>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+android:layout_width="400dp"
+android:layout_height="wrap_content"
+android:layout_gravity="center_horizontal">
 
     <RelativeLayout
         android:id="@+id/devicename_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="25dp"
-        android:layout_below="@+id/buttons_layout"
         android:orientation="vertical"
         android:layout_marginStart="10dp"
         android:background="@null" >
@@ -82,15 +23,12 @@
 
         <Spinner
             android:id="@+id/plants_spinner"
-            android:layout_width="wrap_content"
+            android:layout_width="150dp"
             android:layout_height="wrap_content"
-            android:prompt="@string/app_name"
-            android:layout_marginStart="30dp"
-            android:layout_marginTop="20dp"
-            android:background="@drawable/spinner_bg"
             android:layout_toEndOf="@+id/device_name_tv"
-            android:fontFamily="@font/robotolight"
-            android:popupBackground="#ffffff" />
+            android:popupBackground="#ffffff"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="30dp"/>
     </RelativeLayout>
 
     <RelativeLayout
@@ -99,7 +37,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/devicename_layout"
         android:orientation="vertical"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="50dp"
         android:layout_marginStart="10dp"
         android:background="@null" >
 
@@ -128,7 +66,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/wateringdate_layout"
         android:orientation="vertical"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="80dp"
         android:layout_marginStart="10dp"
         android:background="@null" >
 
@@ -157,7 +95,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/moisture_layout"
         android:orientation="vertical"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="110dp"
         android:layout_marginStart="10dp"
         android:background="@null" >
 
@@ -165,7 +103,7 @@
             android:id="@+id/ipaddess_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="IP address:"
+            android:text="Moisture level:"
             android:fontFamily="@font/robotolight"
             android:textSize="20sp" />
 
@@ -181,5 +119,4 @@
     </RelativeLayout>
 
 
-
-</RelativeLayout>
+</androidx.cardview.widget.CardView>
