@@ -124,13 +124,16 @@ public class WaterPlantActivity extends AppCompatActivity implements AsyncRespon
         mDatabaseRef = FirebaseDatabase.getInstance().getReference("uploads/" + uId + "/");
         mStorage= FirebaseStorage.getInstance();
 
+        Spinner plantsSpinner = (Spinner) findViewById(R.id.plants_spinner);
+
         // ia date din baza de date
         mDBListener = mDatabaseRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 //la fiecare fetch sa curete listele (in caz ca se sterg date)
                 mPlantNames.clear();
-                mPlantWateredDates.clear();
+                mPlantNames.add(0, "Select a plant"); //incepe indexul la 1
+                mPlantWateredDates.clear(); // la restul incepe indexul la 0
                 mPlantMoistureLevel.clear();
 
                 // aici baga key value din real time database
@@ -150,6 +153,12 @@ public class WaterPlantActivity extends AppCompatActivity implements AsyncRespon
                     mPlantWateredDates.add(plantWaterDate);
                     mPlantMoistureLevel.add(plantMoistureLevel);
                 }
+
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>(WaterPlantActivity.this, android.R.layout.simple_spinner_item, mPlantNames);
+
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+                plantsSpinner.setAdapter(adapter);
             }
 
             @Override
@@ -158,45 +167,44 @@ public class WaterPlantActivity extends AppCompatActivity implements AsyncRespon
             }
         });
 
+        for(String p:mPlantNames){
+            Log.i("beforespinner", "plant name " + p);
+        }
+
         //dropdown list cu toate plantele (nume)
+        /*
         Spinner plantsSpinner = (Spinner) findViewById(R.id.plants_spinner);
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, mPlantNames);
 
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         plantsSpinner.setAdapter(adapter);
-        /*
+*/
+        for(String p:mPlantNames){
+            Log.i("onITEMSELECTED1", "plant name " + p);
+        }
+
         plantsSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                //String selectedItem = plantsSpinner.getItemAtPosition(position).toString();
-                //Toast.makeText(getApplicationContext(), mPlantNames.get(position), Toast.LENGTH_LONG).show();
-                //Toast.makeText(this, "Normal click at position: " + position, Toast.LENGTH_SHORT).show();
-                Log.i("onITEMSELECTED", "info " + position);
+                if(parent.getItemAtPosition(position).equals("Select a plant")){
+                    // do nothing - title for spinner
+                }
+                else{
+                    //on selecting a spinner
+                    String item = parent.getItemAtPosition(position).toString();
 
-                adapter.notifyDataSetChanged();
+                    //show selected spinner item
+                    Toast.makeText(parent.getContext(), "Selected " + item, Toast.LENGTH_SHORT).show();
 
-                String data= plantsSpinner.getItemAtPosition(position).toString();
-                Toast.makeText( WaterPlantActivity.this, data, Toast.LENGTH_SHORT).show();
+                    //anything else here
+                }
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
 
             }
-        });*/
-
-        plantsSpinner.setOnTouchListener(new View.OnTouchListener(){
-
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if(event.getAction() == MotionEvent.ACTION_DOWN){
-                    Toast.makeText(WaterPlantActivity.this,"down",Toast.LENGTH_LONG).show();
-                    // Load your spinner here
-                }
-                return false;
-            }
-
         });
 
         // buton de scanare network
