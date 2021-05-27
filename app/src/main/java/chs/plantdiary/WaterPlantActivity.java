@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -77,6 +78,10 @@ public class WaterPlantActivity extends AppCompatActivity implements AsyncRespon
     private DatabaseReference mDatabaseRef;
     private ValueEventListener mDBListener;
 
+    private RelativeLayout waterRL;// wateringdate_layout moisture_layout ipaddress_layout
+    private RelativeLayout moistureRL;
+    private RelativeLayout ipaddressRL;
+
     private ArrayList<String> mPlantNames;
     private ArrayList<String> mPlantWateredDates;
     private ArrayList<String> mPlantMoistureLevel;
@@ -92,7 +97,8 @@ public class WaterPlantActivity extends AppCompatActivity implements AsyncRespon
     private List<String> devices;
     private List<String> moistureLevelDevices;
     private List<String> wateredDateDevices;
-    LinearLayout list;
+
+    private int spinnerPosition = -1;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
@@ -118,6 +124,13 @@ public class WaterPlantActivity extends AppCompatActivity implements AsyncRespon
         devices = new ArrayList<String>();
         moistureLevelDevices = new ArrayList<String>();
         wateredDateDevices = new ArrayList<String>();
+
+        waterRL = findViewById(R.id.wateringdate_layout);
+        moistureRL = findViewById(R.id.moisture_layout);
+        ipaddressRL = findViewById(R.id.ipaddress_layout);
+        waterRL.setVisibility(View.INVISIBLE);
+        moistureRL.setVisibility(View.INVISIBLE);
+        ipaddressRL.setVisibility(View.INVISIBLE);
 
         FirebaseUser currentFirebaseUser = FirebaseAuth.getInstance().getCurrentUser() ;
         String uId = currentFirebaseUser.getUid().toString();
@@ -167,37 +180,33 @@ public class WaterPlantActivity extends AppCompatActivity implements AsyncRespon
             }
         });
 
-        for(String p:mPlantNames){
-            Log.i("beforespinner", "plant name " + p);
-        }
-
-        //dropdown list cu toate plantele (nume)
-        /*
-        Spinner plantsSpinner = (Spinner) findViewById(R.id.plants_spinner);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, mPlantNames);
-
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-        plantsSpinner.setAdapter(adapter);
-*/
-        for(String p:mPlantNames){
-            Log.i("onITEMSELECTED1", "plant name " + p);
-        }
-
         plantsSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if(parent.getItemAtPosition(position).equals("Select a plant")){
                     // do nothing - title for spinner
+                    waterRL.setVisibility(View.INVISIBLE);
+                    moistureRL.setVisibility(View.INVISIBLE);
+                    ipaddressRL.setVisibility(View.INVISIBLE);
+                    setSpinnerPosition(0);
                 }
                 else{
+                    setSpinnerPosition(position);
                     //on selecting a spinner
+                    waterRL.setVisibility(View.VISIBLE);
+                    moistureRL.setVisibility(View.VISIBLE);
+                    ipaddressRL.setVisibility(View.VISIBLE);
+
                     String item = parent.getItemAtPosition(position).toString();
 
-                    //show selected spinner item
-                    Toast.makeText(parent.getContext(), "Selected " + item, Toast.LENGTH_SHORT).show();
+                    //show selected spinner item - debug purpose
+                    //Toast.makeText(parent.getContext(), "Selected " + item, Toast.LENGTH_SHORT).show();
 
-                    //anything else here
+                    // update fields with what is in the database ->TO DO  and when reads from raspi -> it needs to be actualized TO DO
+                    wateringDateTv.setText(mPlantWateredDates.get(position-1));
+                    moistureLevelTv.setText(mPlantMoistureLevel.get(position-1));
+                    devices.add(0, "for debug purpose"); //to delete
+                    ipAddressTv.setText(devices.get(0));
                 }
             }
 
@@ -217,6 +226,7 @@ public class WaterPlantActivity extends AppCompatActivity implements AsyncRespon
             }
         });
 
+        //actualizare date ce sunt trimise de raspi
         refreshButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -304,6 +314,14 @@ public class WaterPlantActivity extends AppCompatActivity implements AsyncRespon
             moistureLevelTv.setText(moistureLevelDevices.get(0));
             ipAddressTv.setText(devices.get(0));
         }
+    }
+
+    public int getSpinnerPosition(){
+        return spinnerPosition;
+    }
+
+    public void setSpinnerPosition(int spinnerPosition){
+        this.spinnerPosition = spinnerPosition;
     }
 }
 
