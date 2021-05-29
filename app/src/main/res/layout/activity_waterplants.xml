@@ -78,6 +78,7 @@
             android:text="Device name:"
             android:layout_marginTop="20dp"
             android:fontFamily="@font/robotolight"
+            android:textColor="@color/white"
             android:textSize="20sp" />
 
         <Spinner
@@ -109,6 +110,7 @@
             android:layout_height="wrap_content"
             android:text="Last watering date:"
             android:fontFamily="@font/robotolight"
+            android:textColor="@color/white"
             android:textSize="20sp" />
 
         <TextView
@@ -118,6 +120,7 @@
             android:layout_toEndOf="@id/watering_date_tv"
             android:text="data"
             android:layout_marginStart="30dp"
+            android:textColor="@color/white"
             android:fontFamily="@font/robotolight"
             android:textSize="20sp" />
     </RelativeLayout>
@@ -137,6 +140,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Moisture level:"
+            android:textColor="@color/white"
             android:fontFamily="@font/robotolight"
             android:textSize="20sp" />
 
@@ -147,6 +151,7 @@
             android:layout_toEndOf="@id/moisture_tv"
             android:text="data"
             android:layout_marginStart="30dp"
+            android:textColor="@color/white"
             android:fontFamily="@font/robotolight"
             android:textSize="20sp" />
     </RelativeLayout>
@@ -166,6 +171,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="IP address:"
+            android:textColor="@color/white"
             android:fontFamily="@font/robotolight"
             android:textSize="20sp" />
 
@@ -174,10 +180,222 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toEndOf="@id/ipaddess_tv"
+            android:textColor="@color/white"
             android:text="data"
             android:layout_marginStart="30dp"
             android:fontFamily="@font/robotolight"
             android:textSize="20sp" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/sunLayout"
+        android:layout_below="@+id/ipaddress_layout"
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:orientation="horizontal"
+        android:visibility="visible">
+
+        <ImageView
+            android:id="@+id/sunImage"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentStart="true"
+            android:layout_gravity="center"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="5dp"
+            android:src="@drawable/sun_icon" />
+
+        <TextView
+            android:id="@+id/sunText"
+            android:layout_width="140dp"
+            android:layout_height="match_parent"
+            android:layout_toEndOf="@id/sunImage"
+            android:gravity="center_vertical"
+            android:textColor="@color/white"
+            android:text="Sunlight"
+            android:fontFamily="@font/robotolight"
+            android:textSize="20dp" />
+
+        <TextView
+            android:id="@+id/sunData"
+            android:layout_width="140dp"
+            android:layout_height="match_parent"
+            android:layout_toEndOf="@id/sunText"
+            android:gravity="center_vertical"
+            android:textColor="@color/white"
+            android:text="data"
+            android:fontFamily="@font/robotolight"
+            android:textSize="20dp" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/waterLayout"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_below="@+id/sunLayout"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal"
+        android:visibility="visible">
+
+        <ImageView
+            android:id="@+id/waterImage"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentStart="true"
+            android:layout_gravity="center"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="5dp"
+            android:src="@drawable/water_icon" />
+
+        <TextView
+            android:id="@+id/waterText"
+            android:layout_width="140dp"
+            android:layout_height="match_parent"
+            android:layout_toEndOf="@id/waterImage"
+            android:gravity="center_vertical"
+            android:text="Water"
+            android:fontFamily="@font/robotolight"
+            android:textColor="@color/white"
+            android:textSize="20dp" />
+
+        <TextView
+            android:id="@+id/waterData"
+            android:layout_width="140dp"
+            android:layout_height="match_parent"
+            android:layout_toEndOf="@id/waterText"
+            android:gravity="center_vertical"
+            android:text="data"
+            android:fontFamily="@font/robotolight"
+            android:textColor="@color/white"
+            android:textSize="20dp" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/tempLayout"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_below="@+id/waterLayout"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal"
+        android:visibility="visible">
+
+        <ImageView
+            android:id="@+id/tempImage"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentStart="true"
+            android:layout_gravity="center"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="5dp"
+            android:src="@drawable/temp_icon" />
+
+        <TextView
+            android:id="@+id/tempText"
+            android:layout_width="140dp"
+            android:layout_height="match_parent"
+            android:layout_toEndOf="@id/tempImage"
+            android:gravity="center_vertical"
+            android:text="Room temp"
+            android:fontFamily="@font/robotolight"
+            android:textColor="@color/white"
+            android:textSize="20dp" />
+
+        <TextView
+            android:id="@+id/tempData"
+            android:layout_width="140dp"
+            android:layout_height="match_parent"
+            android:layout_toEndOf="@id/tempText"
+            android:gravity="center_vertical"
+            android:text="data"
+            android:fontFamily="@font/robotolight"
+            android:textColor="@color/white"
+            android:textSize="20dp" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/fertilizerLayout"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_below="@+id/tempLayout"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal"
+        android:visibility="visible">
+
+        <ImageView
+            android:id="@+id/fertilizerImage"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="10dp"
+            android:gravity="center_vertical"
+            android:layout_marginEnd="5dp"
+            android:src="@drawable/fertilizer_icon" />
+
+        <TextView
+            android:id="@+id/fertilizerText"
+            android:layout_width="140dp"
+            android:layout_height="match_parent"
+            android:layout_toEndOf="@id/fertilizerImage"
+            android:gravity="center_vertical"
+            android:text="Fertilizer"
+            android:fontFamily="@font/robotolight"
+            android:textColor="@color/white"
+            android:textSize="20dp" />
+
+        <TextView
+            android:id="@+id/fertilizerData"
+            android:layout_width="140dp"
+            android:layout_height="match_parent"
+            android:layout_toEndOf="@id/fertilizerText"
+            android:gravity="center_vertical"
+            android:text="data"
+            android:fontFamily="@font/robotolight"
+            android:textColor="@color/white"
+            android:textSize="20dp" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/soilLayout"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_below="@+id/fertilizerLayout"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="50dp"
+        android:orientation="horizontal"
+        android:visibility="visible">
+
+        <ImageView
+            android:id="@+id/soilImage"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="10dp"
+            android:gravity="center_vertical"
+            android:layout_marginEnd="5dp"
+            android:src="@drawable/soil_icon" />
+
+        <TextView
+            android:id="@+id/soilText"
+            android:layout_width="140dp"
+            android:layout_height="match_parent"
+            android:layout_toEndOf="@id/soilImage"
+            android:gravity="center_vertical"
+            android:text="Soil mixture"
+            android:fontFamily="@font/robotolight"
+            android:textColor="@color/white"
+            android:textSize="20dp" />
+
+        <TextView
+            android:id="@+id/soilData"
+            android:layout_width="140dp"
+            android:layout_height="match_parent"
+            android:layout_toEndOf="@id/soilText"
+            android:gravity="center_vertical"
+            android:text="data"
+            android:fontFamily="@font/robotolight"
+            android:textColor="@color/white"
+            android:textSize="20dp" />
     </RelativeLayout>
 
 

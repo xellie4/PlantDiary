@@ -42,6 +42,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.lang.ref.WeakReference;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -78,9 +79,14 @@ public class WaterPlantActivity extends AppCompatActivity implements AsyncRespon
     private DatabaseReference mDatabaseRef;
     private ValueEventListener mDBListener;
 
-    private RelativeLayout waterRL;// wateringdate_layout moisture_layout ipaddress_layout
+    private RelativeLayout waterRL;
     private RelativeLayout moistureRL;
     private RelativeLayout ipaddressRL;
+    private RelativeLayout sunRLData;
+    private RelativeLayout waterRLData;
+    private RelativeLayout tempRLData;
+    private RelativeLayout fertilizerRLData;
+    private RelativeLayout soilRLData;
 
     private ArrayList<String> mPlantNames;
     private ArrayList<String> mPlantWateredDates;
@@ -97,7 +103,7 @@ public class WaterPlantActivity extends AppCompatActivity implements AsyncRespon
     private List<String> devices;
     private List<String> moistureLevelDevices;
     private List<String> wateredDateDevices;
-
+    private List<String> allPlantEntriesForUser = new ArrayList<String>();
     private int spinnerPosition = -1;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -124,13 +130,25 @@ public class WaterPlantActivity extends AppCompatActivity implements AsyncRespon
         devices = new ArrayList<String>();
         moistureLevelDevices = new ArrayList<String>();
         wateredDateDevices = new ArrayList<String>();
+        //allPlantEntriesForUser = new ArrayList<String>();
 
         waterRL = findViewById(R.id.wateringdate_layout);
         moistureRL = findViewById(R.id.moisture_layout);
         ipaddressRL = findViewById(R.id.ipaddress_layout);
+        sunRLData = findViewById(R.id.sunLayout);
+        waterRLData = findViewById(R.id.waterLayout);
+        tempRLData = findViewById(R.id.tempLayout);
+        fertilizerRLData = findViewById(R.id.fertilizerLayout);
+        soilRLData = findViewById(R.id.soilLayout);
+
         waterRL.setVisibility(View.INVISIBLE);
         moistureRL.setVisibility(View.INVISIBLE);
         ipaddressRL.setVisibility(View.INVISIBLE);
+        sunRLData.setVisibility(View.INVISIBLE);
+        waterRLData.setVisibility(View.INVISIBLE);
+        tempRLData.setVisibility(View.INVISIBLE);
+        fertilizerRLData.setVisibility(View.INVISIBLE);
+        soilRLData.setVisibility(View.INVISIBLE);
 
         FirebaseUser currentFirebaseUser = FirebaseAuth.getInstance().getCurrentUser() ;
         String uId = currentFirebaseUser.getUid().toString();
@@ -148,9 +166,13 @@ public class WaterPlantActivity extends AppCompatActivity implements AsyncRespon
                 mPlantNames.add(0, "Select a plant"); //incepe indexul la 1
                 mPlantWateredDates.clear(); // la restul incepe indexul la 0
                 mPlantMoistureLevel.clear();
+                allPlantEntriesForUser.clear();
 
                 // aici baga key value din real time database
                 for(DataSnapshot postSnapshot : snapshot.getChildren()){
+                    // contine practic toate plantele
+                    allPlantEntriesForUser.add(postSnapshot.getKey().toString()); //practic adauga random id-ul plantei in forma de string
+
                     String plantName;
                     String plantWaterDate;
                     String plantMoistureLevel;
@@ -188,25 +210,42 @@ public class WaterPlantActivity extends AppCompatActivity implements AsyncRespon
                     waterRL.setVisibility(View.INVISIBLE);
                     moistureRL.setVisibility(View.INVISIBLE);
                     ipaddressRL.setVisibility(View.INVISIBLE);
+                    sunRLData.setVisibility(View.INVISIBLE);
+                    waterRLData.setVisibility(View.INVISIBLE);
+                    tempRLData.setVisibility(View.INVISIBLE);
+                    fertilizerRLData.setVisibility(View.INVISIBLE);
+                    soilRLData.setVisibility(View.INVISIBLE);
                     setSpinnerPosition(0);
+                    Log.i("POS INAINTE DE ELSE", "" + position);
                 }
                 else{
+
                     setSpinnerPosition(position);
+                    Log.i("POS IN ELSE", "" + position);
                     //on selecting a spinner
                     waterRL.setVisibility(View.VISIBLE);
                     moistureRL.setVisibility(View.VISIBLE);
                     ipaddressRL.setVisibility(View.VISIBLE);
+                    sunRLData.setVisibility(View.VISIBLE);
+                    waterRLData.setVisibility(View.VISIBLE);
+                    tempRLData.setVisibility(View.VISIBLE);
+                    fertilizerRLData.setVisibility(View.VISIBLE);
+                    soilRLData.setVisibility(View.VISIBLE);
 
                     String item = parent.getItemAtPosition(position).toString();
 
                     //show selected spinner item - debug purpose
                     //Toast.makeText(parent.getContext(), "Selected " + item, Toast.LENGTH_SHORT).show();
-
+                    if(devices.isEmpty()){
+                        ipAddressTv.setText("No device scanned yet");
+                    } else {
+                        ipAddressTv.setText(devices.get(0));
+                    }
                     // update fields with what is in the database ->TO DO  and when reads from raspi -> it needs to be actualized TO DO
-                    wateringDateTv.setText(mPlantWateredDates.get(position-1));
-                    moistureLevelTv.setText(mPlantMoistureLevel.get(position-1));
-                    devices.add(0, "for debug purpose"); //to delete
-                    ipAddressTv.setText(devices.get(0));
+                    wateringDateTv.setText(mPlantWateredDates.get(position - 1));
+                    moistureLevelTv.setText(mPlantMoistureLevel.get(position - 1));
+
+                    //tre sa se actualizeze textview cu ce e in db
                 }
             }
 
@@ -280,6 +319,7 @@ public class WaterPlantActivity extends AppCompatActivity implements AsyncRespon
     @RequiresApi(api = Build.VERSION_CODES.M)
     void refreshData(){
         //send WTR to raspi
+        //call processFinish
     }
 
     @Override
@@ -295,24 +335,49 @@ public class WaterPlantActivity extends AppCompatActivity implements AsyncRespon
 
             String[] splitString = s.split("---");
             // splitString[0] contains the first part with Host + device name + ip address
-            moistureLevelDevices.add(splitString[1]);
+            moistureLevelDevices.add(splitString[1] + "%");
             wateredDateDevices.add(splitString[2]);
         }
+
+        Log.i("SPINNERPOZITION", " " + getSpinnerPosition());
 
         Log.i("DEVICES", "");
         if(devices.isEmpty()){
             Toast.makeText(WaterPlantActivity.this, "No device connected", Toast.LENGTH_SHORT).show();
 
+            wateringDateTv.setText("No device connected");
+            moistureLevelTv.setText("No device connected");
+            ipAddressTv.setText("No device connected");
         } else {
             // debug purpose
             for (String s : devices) {
                 Log.i("DEVICES", "device trimmed: " + s);
             }
 
-            // put actual data in textviews
-            wateringDateTv.setText(wateredDateDevices.get(0));
-            moistureLevelTv.setText(moistureLevelDevices.get(0));
-            ipAddressTv.setText(devices.get(0));
+            // put actual data in textviews - cred ca ar fi mai ok sa scriu in db si de acolo in spinner sa citeasca valoarea si avem un flag, daca flag = 1 a citit mesaj nou -> actualizeaza textview din db
+            // sau sa fie mai rapid il afisam direct aici dar il scriem in bd si atunci la urm initializare o sa citeasca direct din bd dar acuma poate mere mai repede daca scriu direct din arraylist, nu si din bd
+            int pos = getSpinnerPosition();
+            wateringDateTv.setText(wateredDateDevices.get(0)); // ii mereu 0 ca avem un singur raspi care trimite date
+            moistureLevelTv.setText(moistureLevelDevices.get(0)); // ii mereu 0 ca avem un singur raspi care trimite date
+            ipAddressTv.setText(devices.get(0)); // la devices ii mereu 0 ca avem un singur device
+
+            //salveaza in baza de date valorile noi
+
+            FirebaseUser currentFirebaseUser = FirebaseAuth.getInstance().getCurrentUser() ;
+            String uId = currentFirebaseUser.getUid().toString();
+
+            DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference("uploads/" + uId + "/" + allPlantEntriesForUser.get(pos-1) + "/");
+            databaseRef.child("water").setValue(wateredDateDevices.get(0));
+            databaseRef.child("moistureLevel").setValue(moistureLevelDevices.get(0))
+                .addOnSuccessListener(new OnSuccessListener < Void > () {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Toast.makeText(WaterPlantActivity.this, "Updated Successfully", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            );
+
+
         }
     }
 
@@ -342,116 +407,6 @@ class NetworkSniffTask extends AsyncTask<Void, Void, List<String>> {
     protected List<String> doInBackground(Void... voids) {
         Log.d(TAG, "Let's sniff the network");
         List<String> result = new ArrayList<String>();
-        try {
-            Context context = mContextRef.get();
-
-            if (context != null) {
-                /* This is all just to get the ip address and it's prefix in order to scan the network */
-                ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-                NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-                WifiManager wm = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-
-                WifiInfo connectionInfo = wm.getConnectionInfo();
-                int ipAddress = connectionInfo.getIpAddress();
-                String ipString = Formatter.formatIpAddress(ipAddress);
-
-
-                Log.d(TAG, "activeNetwork: " + String.valueOf(activeNetwork));
-                Log.d(TAG, "ipString: " + String.valueOf(ipString));
-
-                String prefix = ipString.substring(0, ipString.lastIndexOf(".") + 1);
-                Log.d(TAG, "prefix: " + prefix);
-
-                /* End of IP prefix calculation */
-
-                /* Looping IP addresses starting with prefix */
-                for (int i = 0; i < 255; i++) {
-                    String testIp = prefix + String.valueOf(i);
-
-                    InetAddress address = InetAddress.getByName(testIp);
-                    boolean reachable = address.isReachable(10);
-                    String hostName = address.getCanonicalHostName();
-                    String name = address.getHostName();
-
-                    Socket socket;
-
-                    /* If the IP is reachable, it means the node exists on the network */
-                    if (reachable) {
-                        /* Handshake */
-                        try {
-                            /* We need to check if it accepts sockets on port 6666 to see if it's a watering device */
-                            socket = new Socket(String.valueOf(testIp), 6666);
-                        }
-                        catch (Exception e)
-                        {
-                            continue;
-                        }
-
-                        Log.i(TAG, "Connected!");
-                        // get the output stream from the socket.
-                        OutputStream outputStream = socket.getOutputStream();
-                        InputStream inputStream = socket.getInputStream();
-                        // create a data output stream from the output stream so we can send data through it
-                        DataOutputStream dataOutputStream = new DataOutputStream(outputStream);
-                        DataInputStream dataInputStream = new DataInputStream(inputStream);
-
-                        // Send GET to the device
-                        dataOutputStream.writeUTF("GET");
-                        dataOutputStream.flush(); // send the message
-                        //dataOutputStream.close(); // close the output stream when we're done.
-                        Log.i(TAG, "GET request sent! ");
-
-                        /* Get device response */
-                        byte[] response_bytes = new byte[1024];
-
-                        /* Get actual response length */
-                        dataInputStream.read(response_bytes);
-                        int n;
-                        for(n = 0; n < 1024; n++)
-                        {
-                            if(response_bytes[n] == 0x00)
-                            {
-                                break;
-                            }
-                        }
-
-                        /* Copy only actual response */
-                        byte[] parsed_response_bytes = new byte[n];
-
-                        for(int ix = 0; ix < n; ix++)
-                        {
-                            parsed_response_bytes[ix] = response_bytes[ix];
-                        }
-
-                        /* Convert byte array of response to String */
-                        String response = new String(parsed_response_bytes, StandardCharsets.US_ASCII);
-
-                        /* Optional send an ACK (Acknowledge), doesn't do anything since server doesn't care */
-                        Log.i(TAG, "Answer: " + response); // response <- contains the data that the raspi sent to the app
-                        dataOutputStream.writeUTF("ACK");
-
-                        socket.close();
-
-                        /* Add all the data that we need to this String list, because this will be passed to the main thread */
-                        /* Here IP, DeviceName, LastWateringDate, HumidityLevel should be added */
-                        /* Later in POST Execution function the devices should be added to a list with all this information */
-                        /* Devices should be added into a database in order to not rescan the network all the time */
-                        /* There should be a button for scanning the network */
-                        /* Each device from the list should refresh their info periodically or with a button assigned to them */
-                        /* Device name should be changeable */
-                        result.add("Host: " + String.valueOf(name) + "(" + String.valueOf(testIp) + ")" + "---" + response);
-
-                        Log.i(TAG, "Host: " + String.valueOf(name) + "(" + String.valueOf(testIp) + ") is reachable!");
-                    }
-
-                }
-            }
-
-        } catch (Throwable t) {
-            Log.e(TAG, "Well that's not good.", t);
-        }
-
-        Log.i(TAG, "RETURNING.........................................");
 
         return result;
     }
@@ -467,6 +422,9 @@ class NetworkSniffTask extends AsyncTask<Void, Void, List<String>> {
             Log.i("POSTEXEC", "ADDED: " + r);
 
         }
+
+        //for testing purposes
+        result.add("Host: raspberry(192.168.1.140)---65---Not watered yet raspi");
 
         delegate.processFinish(result);
     }
