@@ -82,6 +82,7 @@ public class WaterPlantActivity extends AppCompatActivity implements AsyncRespon
     private DatabaseReference mDatabaseRef;
     private ValueEventListener mDBListener;
 
+    /* declaratie toate relativelayout din layout */
     private RelativeLayout waterRL;
     private RelativeLayout moistureRL;
     private RelativeLayout ipaddressRL;
@@ -98,7 +99,6 @@ public class WaterPlantActivity extends AppCompatActivity implements AsyncRespon
     private TextView wateringDateTv;
     private TextView moistureLevelTv;
     private TextView ipAddressTv;
-
     private TextView sunData;
     private TextView waterData;
     private TextView tempData;
@@ -107,12 +107,12 @@ public class WaterPlantActivity extends AppCompatActivity implements AsyncRespon
 
     private Button scanDevicesButton;
     private Button refreshButton;
-    private List<Plants> mPlants; //lista cu toate entry-urile de plante din baza de date
 
     private List<String> devices;
     private List<String> moistureLevelDevices;
     private List<String> wateredDateDevices;
     private List<String> allPlantEntriesForUser = new ArrayList<String>();
+
     public static int spinnerPosition = -1;
 
     private String lastWateredDate;
@@ -139,16 +139,6 @@ public class WaterPlantActivity extends AppCompatActivity implements AsyncRespon
         tempData = findViewById(R.id.tempData);
         fertilizerData = findViewById(R.id.fertilizerData);
         soilData = findViewById(R.id.soilData);
-
-        /*
-        wateringDateTv.setText("N/A");// trebuie sa ia valoarea din ce e in baza de date cand aleg din spinner
-        moistureLevelTv.setText("N/A");
-        ipAddressTv.setText("N/A");
-        sunData.setText("N/A");
-        waterData.setText("N/A");
-        tempData.setText("N/A");
-        fertilizerData.setText("N/A");
-        soilData.setText("N/A"); */
 
         scanDevicesButton = (Button) findViewById(R.id.scan_devices_button);
         refreshButton = (Button) findViewById(R.id.refresh_button);
