@@ -117,11 +117,11 @@
             android:id="@+id/watering_date_data"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@id/watering_date_tv"
-            android:text="data"
             android:layout_marginStart="30dp"
-            android:textColor="@color/white"
+            android:layout_toEndOf="@id/watering_date_tv"
             android:fontFamily="@font/robotolight"
+            android:text="data"
+            android:textColor="@color/white"
             android:textSize="20sp" />
     </RelativeLayout>
 
@@ -179,11 +179,11 @@
             android:id="@+id/ipaddress_data"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@id/ipaddess_tv"
-            android:textColor="@color/white"
-            android:text="data"
             android:layout_marginStart="30dp"
+            android:layout_toEndOf="@id/ipaddess_tv"
             android:fontFamily="@font/robotolight"
+            android:text="data"
+            android:textColor="@color/white"
             android:textSize="20sp" />
     </RelativeLayout>
 
@@ -219,7 +219,7 @@
 
         <TextView
             android:id="@+id/sunData"
-            android:layout_width="140dp"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_toEndOf="@id/sunText"
             android:gravity="center_vertical"
@@ -261,7 +261,7 @@
 
         <TextView
             android:id="@+id/waterData"
-            android:layout_width="140dp"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_toEndOf="@id/waterText"
             android:gravity="center_vertical"
@@ -303,7 +303,7 @@
 
         <TextView
             android:id="@+id/tempData"
-            android:layout_width="140dp"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_toEndOf="@id/tempText"
             android:gravity="center_vertical"
@@ -345,7 +345,7 @@
 
         <TextView
             android:id="@+id/fertilizerData"
-            android:layout_width="140dp"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_toEndOf="@id/fertilizerText"
             android:gravity="center_vertical"
@@ -388,7 +388,7 @@
 
         <TextView
             android:id="@+id/soilData"
-            android:layout_width="140dp"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_toEndOf="@id/soilText"
             android:gravity="center_vertical"

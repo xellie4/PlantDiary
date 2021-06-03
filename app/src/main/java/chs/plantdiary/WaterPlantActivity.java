@@ -3,6 +3,7 @@ package chs.plantdiary;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -58,8 +59,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -96,6 +99,12 @@ public class WaterPlantActivity extends AppCompatActivity implements AsyncRespon
     private TextView moistureLevelTv;
     private TextView ipAddressTv;
 
+    private TextView sunData;
+    private TextView waterData;
+    private TextView tempData;
+    private TextView fertilizerData;
+    private TextView soilData;
+
     private Button scanDevicesButton;
     private Button refreshButton;
     private List<Plants> mPlants; //lista cu toate entry-urile de plante din baza de date
@@ -104,7 +113,17 @@ public class WaterPlantActivity extends AppCompatActivity implements AsyncRespon
     private List<String> moistureLevelDevices;
     private List<String> wateredDateDevices;
     private List<String> allPlantEntriesForUser = new ArrayList<String>();
-    private int spinnerPosition = -1;
+    public static int spinnerPosition = -1;
+
+    private String lastWateredDate;
+    private String moistureMeterLevel;
+    private String sunlightInfoData;
+    private String waterInfoData;
+    private String roomTempInfoData;
+    private String fertilizerInfoData;
+    private String soilMixtureInfoData;
+
+    private Spinner plantsSpinner;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
@@ -113,13 +132,23 @@ public class WaterPlantActivity extends AppCompatActivity implements AsyncRespon
         setContentView(R.layout.activity_waterplants);
 
         wateringDateTv = findViewById(R.id.watering_date_data);
-        wateringDateTv.setText("N/A");// trebuie sa ia valoarea din ce e in baza de date cand aleg din spinner
-
         moistureLevelTv =findViewById(R.id.moisture_data);
-        moistureLevelTv.setText("N/A");
-
         ipAddressTv = findViewById(R.id.ipaddress_data);
+        sunData = findViewById(R.id.sunData);
+        waterData = findViewById(R.id.waterData);
+        tempData = findViewById(R.id.tempData);
+        fertilizerData = findViewById(R.id.fertilizerData);
+        soilData = findViewById(R.id.soilData);
+
+        /*
+        wateringDateTv.setText("N/A");// trebuie sa ia valoarea din ce e in baza de date cand aleg din spinner
+        moistureLevelTv.setText("N/A");
         ipAddressTv.setText("N/A");
+        sunData.setText("N/A");
+        waterData.setText("N/A");
+        tempData.setText("N/A");
+        fertilizerData.setText("N/A");
+        soilData.setText("N/A"); */
 
         scanDevicesButton = (Button) findViewById(R.id.scan_devices_button);
         refreshButton = (Button) findViewById(R.id.refresh_button);
@@ -130,7 +159,7 @@ public class WaterPlantActivity extends AppCompatActivity implements AsyncRespon
         devices = new ArrayList<String>();
         moistureLevelDevices = new ArrayList<String>();
         wateredDateDevices = new ArrayList<String>();
-        //allPlantEntriesForUser = new ArrayList<String>();
+        allPlantEntriesForUser = new ArrayList<String>();
 
         waterRL = findViewById(R.id.wateringdate_layout);
         moistureRL = findViewById(R.id.moisture_layout);
@@ -155,7 +184,7 @@ public class WaterPlantActivity extends AppCompatActivity implements AsyncRespon
         mDatabaseRef = FirebaseDatabase.getInstance().getReference("uploads/" + uId + "/");
         mStorage= FirebaseStorage.getInstance();
 
-        Spinner plantsSpinner = (Spinner) findViewById(R.id.plants_spinner);
+        plantsSpinner = (Spinner) findViewById(R.id.plants_spinner);
 
         // ia date din baza de date
         mDBListener = mDatabaseRef.addValueEventListener(new ValueEventListener() {
@@ -163,10 +192,8 @@ public class WaterPlantActivity extends AppCompatActivity implements AsyncRespon
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 //la fiecare fetch sa curete listele (in caz ca se sterg date)
                 mPlantNames.clear();
-                mPlantNames.add(0, "Select a plant"); //incepe indexul la 1
-                mPlantWateredDates.clear(); // la restul incepe indexul la 0
-                mPlantMoistureLevel.clear();
                 allPlantEntriesForUser.clear();
+                mPlantNames.add(0, "Select a plant"); // numele plantelor incep de pe indexul 1
 
                 // aici baga key value din real time database
                 for(DataSnapshot postSnapshot : snapshot.getChildren()){
@@ -174,19 +201,14 @@ public class WaterPlantActivity extends AppCompatActivity implements AsyncRespon
                     allPlantEntriesForUser.add(postSnapshot.getKey().toString()); //practic adauga random id-ul plantei in forma de string
 
                     String plantName;
-                    String plantWaterDate;
-                    String plantMoistureLevel;
 
                     // ia valoarea din key pentru campul plantName si date
                     plantName = postSnapshot.child("plantName").getValue(String.class);
-                    plantWaterDate = postSnapshot.child("date").getValue(String.class);
-                    plantMoistureLevel = postSnapshot.child("moistureLevel").getValue(String.class);
 
-                    Log.d("TAG", "name " + plantName + " date " + plantWaterDate);
+                    Log.d("TAG", "name " + plantName);
 
                     mPlantNames.add(plantName);
-                    mPlantWateredDates.add(plantWaterDate);
-                    mPlantMoistureLevel.add(plantMoistureLevel);
+
                 }
 
                 ArrayAdapter<String> adapter = new ArrayAdapter<String>(WaterPlantActivity.this, android.R.layout.simple_spinner_item, mPlantNames);
@@ -201,6 +223,7 @@ public class WaterPlantActivity extends AppCompatActivity implements AsyncRespon
                 Toast.makeText(WaterPlantActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
+
 
         plantsSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -219,10 +242,39 @@ public class WaterPlantActivity extends AppCompatActivity implements AsyncRespon
                     Log.i("POS INAINTE DE ELSE", "" + position);
                 }
                 else{
-
+                    plantsSpinner.setSelection(position);
                     setSpinnerPosition(position);
-                    Log.i("POS IN ELSE", "" + position);
-                    //on selecting a spinner
+                    onPositionReadAndSetValues(position);
+                    // get data from db
+                    /*
+                    DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference("uploads/" + uId + "/" + allPlantEntriesForUser.get(position-1) + "/");
+                    mDBListener = databaseRef.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            lastWateredDate = snapshot.child("date").getValue().toString();
+                            moistureMeterLevel = snapshot.child("moistureLevel").getValue().toString();
+                            sunlightInfoData = snapshot.child("sun").getValue().toString();
+                            waterInfoData = snapshot.child("water").getValue().toString();
+                            roomTempInfoData = snapshot.child("temp").getValue().toString();
+                            fertilizerInfoData = snapshot.child("fertilizer").getValue().toString();
+                            soilMixtureInfoData = snapshot.child("soil").getValue().toString();
+
+                            wateringDateTv.setText(lastWateredDate);
+                            moistureLevelTv.setText(moistureMeterLevel);
+                            sunData.setText(sunlightInfoData);
+                            waterData.setText(waterInfoData);
+                            tempData.setText(roomTempInfoData);
+                            fertilizerData.setText(fertilizerInfoData);
+                            soilData.setText(soilMixtureInfoData);
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+                            //System.out.println("The read failed: " + databaseError.getCode());
+                            Toast.makeText(WaterPlantActivity.this, "nu mere", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
                     waterRL.setVisibility(View.VISIBLE);
                     moistureRL.setVisibility(View.VISIBLE);
                     ipaddressRL.setVisibility(View.VISIBLE);
@@ -240,12 +292,11 @@ public class WaterPlantActivity extends AppCompatActivity implements AsyncRespon
                         ipAddressTv.setText("No device scanned yet");
                     } else {
                         ipAddressTv.setText(devices.get(0));
-                    }
-                    // update fields with what is in the database ->TO DO  and when reads from raspi -> it needs to be actualized TO DO
-                    wateringDateTv.setText(mPlantWateredDates.get(position - 1));
-                    moistureLevelTv.setText(mPlantMoistureLevel.get(position - 1));
+                    }*/
 
-                    //tre sa se actualizeze textview cu ce e in db
+                    // update fields with what is in the database ->TO DO  and when reads from raspi -> it needs to be actualized TO DO
+                    //wateringDateTv.setText(mPlantWateredDates.get(position - 1));
+                    //moistureLevelTv.setText(mPlantMoistureLevel.get(position - 1));
                 }
             }
 
@@ -272,6 +323,61 @@ public class WaterPlantActivity extends AppCompatActivity implements AsyncRespon
                 refreshData();
             }
         });
+    }
+
+    void onPositionReadAndSetValues(int position){
+        FirebaseUser currentFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        String uId = currentFirebaseUser.getUid().toString();
+        DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference("uploads/" + uId + "/" + allPlantEntriesForUser.get(position-1) + "/");
+        mDBListener = databaseRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                lastWateredDate = snapshot.child("date").getValue().toString();
+                moistureMeterLevel = snapshot.child("moistureLevel").getValue().toString();
+                sunlightInfoData = snapshot.child("sun").getValue().toString();
+                waterInfoData = snapshot.child("water").getValue().toString();
+                roomTempInfoData = snapshot.child("temp").getValue().toString();
+                fertilizerInfoData = snapshot.child("fertilizer").getValue().toString();
+                soilMixtureInfoData = snapshot.child("soil").getValue().toString();
+
+                wateringDateTv.setText(lastWateredDate);
+                moistureLevelTv.setText(moistureMeterLevel);
+                sunData.setText(sunlightInfoData);
+                waterData.setText(waterInfoData);
+                tempData.setText(roomTempInfoData);
+                fertilizerData.setText(fertilizerInfoData);
+                soilData.setText(soilMixtureInfoData);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                //System.out.println("The read failed: " + databaseError.getCode());
+                Toast.makeText(WaterPlantActivity.this, "nu mere", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        waterRL.setVisibility(View.VISIBLE);
+        moistureRL.setVisibility(View.VISIBLE);
+        ipaddressRL.setVisibility(View.VISIBLE);
+        sunRLData.setVisibility(View.VISIBLE);
+        waterRLData.setVisibility(View.VISIBLE);
+        tempRLData.setVisibility(View.VISIBLE);
+        fertilizerRLData.setVisibility(View.VISIBLE);
+        soilRLData.setVisibility(View.VISIBLE);
+
+        //String item = parent.getItemAtPosition(position).toString();
+
+        //show selected spinner item - debug purpose
+        //Toast.makeText(parent.getContext(), "Selected " + item, Toast.LENGTH_SHORT).show();
+        if(devices.isEmpty()){
+            ipAddressTv.setText("No device scanned yet");
+        } else {
+            ipAddressTv.setText(devices.get(0));
+        }
+
+        // update fields with what is in the database ->TO DO  and when reads from raspi -> it needs to be actualized TO DO
+        //wateringDateTv.setText(mPlantWateredDates.get(position - 1));
+        //moistureLevelTv.setText(mPlantMoistureLevel.get(position - 1));
     }
 
     @Override
@@ -318,14 +424,83 @@ public class WaterPlantActivity extends AppCompatActivity implements AsyncRespon
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     void refreshData(){
-        //send WTR to raspi
-        //call processFinish
+        try {
+            String device_ipaddress = devices.get(0);
+            InetAddress address = InetAddress.getByName(device_ipaddress);
+            String hostName = address.getCanonicalHostName();
+            String name = address.getHostName();
+
+            Socket socket;
+            List<String> result = new ArrayList<String>();
+
+            try {
+                Log.i("TRY", device_ipaddress + " is reachable");
+
+                /* We need to check if it accepts sockets on port 6666 to see if it's a watering device */
+                socket = new Socket(device_ipaddress, 6666);
+
+                Log.i("INFO", "Connected!");
+                // get the output stream from the socket.
+                OutputStream outputStream = socket.getOutputStream();
+                InputStream inputStream = socket.getInputStream();
+                // create a data output stream from the output stream so we can send data through it
+                DataOutputStream dataOutputStream = new DataOutputStream(outputStream);
+                DataInputStream dataInputStream = new DataInputStream(inputStream);
+
+                // Send GET to the device
+                dataOutputStream.writeUTF("GET");
+                dataOutputStream.flush(); // send the message
+                //dataOutputStream.close(); // close the output stream when we're done.
+                Log.i("Info", "GET request sent! ");
+
+                /* Get device response */
+                byte[] response_bytes = new byte[1024];
+
+                /* Get actual response length */
+                dataInputStream.read(response_bytes);
+                int n;
+                for (n = 0; n < 1024; n++) {
+                    if (response_bytes[n] == 0x00) {
+                        break;
+                    }
+                }
+
+                /* Copy only actual response */
+                byte[] parsed_response_bytes = new byte[n];
+
+                for (int ix = 0; ix < n; ix++) {
+                    parsed_response_bytes[ix] = response_bytes[ix];
+                }
+
+                /* Convert byte array of response to String */
+                String response = new String(parsed_response_bytes, StandardCharsets.US_ASCII);
+
+                /* Optional send an ACK (Acknowledge), doesn't do anything since server doesn't care */
+                Log.i("INFO", "Answer: " + response); // response <- contains the data that the raspi sent to the app
+                dataOutputStream.writeUTF("ACK");
+
+                socket.close();
+
+                Log.i("INFO", "Host: " + String.valueOf(name) + "(" + device_ipaddress + ") is reachable!");
+                result.add("Host: " + String.valueOf(name) + "(" + device_ipaddress + ")" + "---" + response);
+
+                processFinish(result);
+            } catch (Exception e) {
+                Log.i("TRY", device_ipaddress + " is not reachable");
+            }
+
+        } catch (Exception e){
+            Log.i("TRY",  "nu bun");
+        }
     }
 
     @Override
     public void processFinish(List<String> result) {
         Log.i("ProcessFinish", "ENTERED PROCESSFINISH IN WATER ACTIVITY");
         //devices.clear();
+        moistureLevelDevices.clear();
+        wateredDateDevices.clear();
+        devices.clear();
 
         //devices contains all the device ip addresses that are connected
         for(String s: result){
@@ -357,6 +532,8 @@ public class WaterPlantActivity extends AppCompatActivity implements AsyncRespon
             // put actual data in textviews - cred ca ar fi mai ok sa scriu in db si de acolo in spinner sa citeasca valoarea si avem un flag, daca flag = 1 a citit mesaj nou -> actualizeaza textview din db
             // sau sa fie mai rapid il afisam direct aici dar il scriem in bd si atunci la urm initializare o sa citeasca direct din bd dar acuma poate mere mai repede daca scriu direct din arraylist, nu si din bd
             int pos = getSpinnerPosition();
+            plantsSpinner.setSelection(pos);
+
             wateringDateTv.setText(wateredDateDevices.get(0)); // ii mereu 0 ca avem un singur raspi care trimite date
             moistureLevelTv.setText(moistureLevelDevices.get(0)); // ii mereu 0 ca avem un singur raspi care trimite date
             ipAddressTv.setText(devices.get(0)); // la devices ii mereu 0 ca avem un singur device
@@ -367,7 +544,7 @@ public class WaterPlantActivity extends AppCompatActivity implements AsyncRespon
             String uId = currentFirebaseUser.getUid().toString();
 
             DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference("uploads/" + uId + "/" + allPlantEntriesForUser.get(pos-1) + "/");
-            databaseRef.child("water").setValue(wateredDateDevices.get(0));
+            databaseRef.child("date").setValue(wateredDateDevices.get(0));
             databaseRef.child("moistureLevel").setValue(moistureLevelDevices.get(0))
                 .addOnSuccessListener(new OnSuccessListener < Void > () {
                     @Override
@@ -377,7 +554,9 @@ public class WaterPlantActivity extends AppCompatActivity implements AsyncRespon
                 }
             );
 
-
+            plantsSpinner.setSelection(pos);
+            onPositionReadAndSetValues(pos);
+            Log.d("INFO AFTER WRITING IN DB", "info");
         }
     }
 
@@ -424,7 +603,7 @@ class NetworkSniffTask extends AsyncTask<Void, Void, List<String>> {
         }
 
         //for testing purposes
-        result.add("Host: raspberry(192.168.1.140)---65---Not watered yet raspi");
+        result.add("Host: raspberry(192.168.1.140)---100---water date w/e");
 
         delegate.processFinish(result);
     }
