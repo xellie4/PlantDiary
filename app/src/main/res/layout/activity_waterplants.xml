@@ -61,12 +61,24 @@
             android:textSize="18sp" />
     </RelativeLayout>
 
+    <TextView
+        android:id="@+id/select_device_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Select the plant your water tank is connected to!"
+        android:layout_below="@+id/buttons_layout"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:fontFamily="@font/robotolight"
+        android:textColor="@color/white"
+        android:textSize="17sp" />
+
     <RelativeLayout
         android:id="@+id/devicename_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="25dp"
-        android:layout_below="@+id/buttons_layout"
+        android:layout_below="@+id/select_device_text"
         android:orientation="vertical"
         android:layout_marginStart="10dp"
         android:background="@null" >
@@ -76,7 +88,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Device name:"
-            android:layout_marginTop="20dp"
             android:fontFamily="@font/robotolight"
             android:textColor="@color/white"
             android:textSize="20sp" />
@@ -87,7 +98,6 @@
             android:layout_height="wrap_content"
             android:prompt="@string/app_name"
             android:layout_marginStart="30dp"
-            android:layout_marginTop="20dp"
             android:background="@drawable/spinner_bg"
             android:layout_toEndOf="@+id/device_name_tv"
             android:fontFamily="@font/robotolight"
@@ -106,7 +116,7 @@
 
         <TextView
             android:id="@+id/watering_date_tv"
-            android:layout_width="wrap_content"
+            android:layout_width="185dp"
             android:layout_height="wrap_content"
             android:text="Last watering date:"
             android:fontFamily="@font/robotolight"
@@ -117,7 +127,6 @@
             android:id="@+id/watering_date_data"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="30dp"
             android:layout_toEndOf="@id/watering_date_tv"
             android:fontFamily="@font/robotolight"
             android:text="data"
@@ -137,7 +146,7 @@
 
         <TextView
             android:id="@+id/moisture_tv"
-            android:layout_width="wrap_content"
+            android:layout_width="185dp"
             android:layout_height="wrap_content"
             android:text="Moisture level:"
             android:textColor="@color/white"
@@ -150,7 +159,6 @@
             android:layout_height="wrap_content"
             android:layout_toEndOf="@id/moisture_tv"
             android:text="data"
-            android:layout_marginStart="30dp"
             android:textColor="@color/white"
             android:fontFamily="@font/robotolight"
             android:textSize="20sp" />
@@ -168,7 +176,7 @@
 
         <TextView
             android:id="@+id/ipaddess_tv"
-            android:layout_width="wrap_content"
+            android:layout_width="185dp"
             android:layout_height="wrap_content"
             android:text="IP address:"
             android:textColor="@color/white"
@@ -179,7 +187,6 @@
             android:id="@+id/ipaddress_data"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="30dp"
             android:layout_toEndOf="@id/ipaddess_tv"
             android:fontFamily="@font/robotolight"
             android:text="data"
