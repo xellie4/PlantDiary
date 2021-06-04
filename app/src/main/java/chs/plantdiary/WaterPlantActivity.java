@@ -2,6 +2,11 @@ package chs.plantdiary;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.app.Dialog;
+import android.app.ProgressDialog;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -10,6 +15,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -124,6 +130,7 @@ public class WaterPlantActivity extends AppCompatActivity implements AsyncRespon
     private String soilMixtureInfoData;
 
     private Spinner plantsSpinner;
+    static ProgressBar mProgressBar;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
@@ -175,6 +182,10 @@ public class WaterPlantActivity extends AppCompatActivity implements AsyncRespon
         mStorage= FirebaseStorage.getInstance();
 
         plantsSpinner = (Spinner) findViewById(R.id.plants_spinner);
+
+        mProgressBar = findViewById(R.id.progressbar);
+        mProgressBar.setVisibility(View.INVISIBLE);
+        mProgressBar.setProgressTintList(ColorStateList.valueOf(Color.WHITE));
 
         // ia date din baza de date
         mDBListener = mDatabaseRef.addValueEventListener(new ValueEventListener() {
@@ -301,8 +312,13 @@ public class WaterPlantActivity extends AppCompatActivity implements AsyncRespon
             //@RequiresApi(api = Build.VERSION_CODES.M)
             @Override
             public void onClick(View v) {
-                scanNetwork();//ez csak elinditja
-                // maybe put a progress bar? tbd
+                if(spinnerPosition < 1){
+                    Toast.makeText(WaterPlantActivity.this, "Please select a plant!", Toast.LENGTH_SHORT).show();
+                } else {
+                    mProgressBar.setVisibility(View.VISIBLE);
+                    mProgressBar.setProgress(0);
+                    scanNetwork();//ez csak elinditja
+                }
             }
         });
 
@@ -565,8 +581,6 @@ class NetworkSniffTask extends AsyncTask<Void, Void, List<String>> {
 
     private WeakReference<Context> mContextRef;
 
-    private List<String> last_results;
-
     public NetworkSniffTask(Context context){
         mContextRef = new WeakReference<Context>(context);
     }
@@ -576,7 +590,7 @@ class NetworkSniffTask extends AsyncTask<Void, Void, List<String>> {
     protected List<String> doInBackground(Void... voids) {
         Log.d(TAG, "Let's sniff the network");
         List<String> result = new ArrayList<String>();
-
+        //in for sa punem WaterPlantActivity.mProgressBar.setProgress(x); cu if-uri gen i e 125 gen 50% => set 50 si la 25% si la 75% 25 75
         return result;
     }
 
@@ -584,7 +598,8 @@ class NetworkSniffTask extends AsyncTask<Void, Void, List<String>> {
     @Override
     protected void onPostExecute(List<String> result)
     {
-
+        WaterPlantActivity.mProgressBar.setProgress(100);
+        WaterPlantActivity.mProgressBar.setVisibility(View.INVISIBLE);
         Log.i("POSTEXEC", "ENTERED POST EXEC");
         for(String r:result)
         {

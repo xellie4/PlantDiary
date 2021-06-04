@@ -25,11 +25,10 @@
         android:id="@+id/buttons_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="25dp"
         android:layout_below="@+id/waterplant"
-        android:orientation="vertical"
-        android:layout_marginStart="10dp"
-        android:background="@null" >
+        android:layout_marginTop="25dp"
+        android:background="@null"
+        android:orientation="vertical">
 
         <Button
             android:id="@+id/refresh_button"
@@ -51,8 +50,8 @@
             android:layout_height="70dp"
             android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
-            android:background="@drawable/custom_button2"
             android:layout_toEndOf="@+id/refresh_button"
+            android:background="@drawable/custom_button2"
             android:elevation="4dp"
             android:fontFamily="@font/robotomedium"
             android:gravity="center"
@@ -61,12 +60,22 @@
             android:textSize="18sp" />
     </RelativeLayout>
 
+    <ProgressBar
+        android:id="@+id/progressbar"
+        android:layout_width="300dp"
+        android:layout_marginTop="20dp"
+        android:visibility="invisible"
+        android:layout_below="@+id/buttons_layout"
+        android:layout_height="30dp"
+        android:layout_centerHorizontal="true"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"  />
+
     <TextView
         android:id="@+id/select_device_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Select the plant your water tank is connected to!"
-        android:layout_below="@+id/buttons_layout"
+        android:layout_below="@+id/progressbar"
         android:layout_marginTop="20dp"
         android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp"
