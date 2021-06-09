@@ -1,2 +1,3 @@
 # PlantDiary
- aplicatie CHS
+ Proiect Licență
+ Olah Evelin
