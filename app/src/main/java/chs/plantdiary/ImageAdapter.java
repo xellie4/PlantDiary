@@ -81,7 +81,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
             }
         }
 
-        //meniu cu optiunile de edit plant si delete plant
+        /* meniu cu optiunea de stergere a plantei selectate */
         @Override
         public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
             menu.setHeaderTitle("Choose an option");
@@ -91,7 +91,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
             delete.setOnMenuItemClickListener(this);
         }
 
-        // cand tinem apasat pe ecran, apare meniul: redirectionat in functie de operatiunea aleasa
+        /* cand tinem apasat pe ecran, apare meniul: redirectionat in functie de operatiunea aleasa */
         @Override
         public boolean onMenuItemClick(MenuItem item) {
             if (mListener != null){

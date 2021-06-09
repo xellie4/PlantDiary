@@ -246,58 +246,6 @@ public class WaterPlantActivity extends AppCompatActivity implements AsyncRespon
                     plantsSpinner.setSelection(position);
                     setSpinnerPosition(position);
                     onPositionReadAndSetValues(position);
-                    // get data from db
-                    /*
-                    DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference("uploads/" + uId + "/" + allPlantEntriesForUser.get(position-1) + "/");
-                    mDBListener = databaseRef.addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            lastWateredDate = snapshot.child("date").getValue().toString();
-                            moistureMeterLevel = snapshot.child("moistureLevel").getValue().toString();
-                            sunlightInfoData = snapshot.child("sun").getValue().toString();
-                            waterInfoData = snapshot.child("water").getValue().toString();
-                            roomTempInfoData = snapshot.child("temp").getValue().toString();
-                            fertilizerInfoData = snapshot.child("fertilizer").getValue().toString();
-                            soilMixtureInfoData = snapshot.child("soil").getValue().toString();
-
-                            wateringDateTv.setText(lastWateredDate);
-                            moistureLevelTv.setText(moistureMeterLevel);
-                            sunData.setText(sunlightInfoData);
-                            waterData.setText(waterInfoData);
-                            tempData.setText(roomTempInfoData);
-                            fertilizerData.setText(fertilizerInfoData);
-                            soilData.setText(soilMixtureInfoData);
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
-                            //System.out.println("The read failed: " + databaseError.getCode());
-                            Toast.makeText(WaterPlantActivity.this, "nu mere", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-
-                    waterRL.setVisibility(View.VISIBLE);
-                    moistureRL.setVisibility(View.VISIBLE);
-                    ipaddressRL.setVisibility(View.VISIBLE);
-                    sunRLData.setVisibility(View.VISIBLE);
-                    waterRLData.setVisibility(View.VISIBLE);
-                    tempRLData.setVisibility(View.VISIBLE);
-                    fertilizerRLData.setVisibility(View.VISIBLE);
-                    soilRLData.setVisibility(View.VISIBLE);
-
-                    String item = parent.getItemAtPosition(position).toString();
-
-                    //show selected spinner item - debug purpose
-                    //Toast.makeText(parent.getContext(), "Selected " + item, Toast.LENGTH_SHORT).show();
-                    if(devices.isEmpty()){
-                        ipAddressTv.setText("No device scanned yet");
-                    } else {
-                        ipAddressTv.setText(devices.get(0));
-                    }*/
-
-                    // update fields with what is in the database ->TO DO  and when reads from raspi -> it needs to be actualized TO DO
-                    //wateringDateTv.setText(mPlantWateredDates.get(position - 1));
-                    //moistureLevelTv.setText(mPlantMoistureLevel.get(position - 1));
                 }
             }
 

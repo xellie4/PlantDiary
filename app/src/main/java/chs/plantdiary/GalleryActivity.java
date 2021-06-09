@@ -88,7 +88,7 @@ public class GalleryActivity extends AppCompatActivity implements ImageAdapter.O
         //Toast.makeText(this, "Normal click at position: " + position, Toast.LENGTH_SHORT).show();
     }
 
-    //cand apasam pe delete plant din meniu
+    /* cand apasam pe delete plant din meniu se sterge poza selectata */
     @Override
     public void onDeletePlantClick(int position) {
         Plants selectedItem = mPlants.get(position);
