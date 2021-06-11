@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="35dp"
         android:layout_marginStart="50dp"
-        android:text="Connected devices"
+        android:text="Watering activity"
         android:layout_centerHorizontal="true"
         android:textColor="@color/white"
         android:fontFamily="@font/montserratlight"
