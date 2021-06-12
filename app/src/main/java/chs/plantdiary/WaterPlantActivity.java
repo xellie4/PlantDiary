@@ -9,6 +9,7 @@ import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.StrictMode;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -44,6 +45,7 @@ import android.widget.ScrollView;
 import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -51,6 +53,7 @@ import java.lang.ref.WeakReference;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
@@ -131,7 +134,7 @@ public class WaterPlantActivity extends AppCompatActivity implements AsyncRespon
 
     private Spinner plantsSpinner;
     static ProgressBar mProgressBar;
-
+    static String deviceIp;
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -294,6 +297,8 @@ public class WaterPlantActivity extends AppCompatActivity implements AsyncRespon
                 fertilizerInfoData = snapshot.child("fertilizer").getValue().toString();
                 soilMixtureInfoData = snapshot.child("soil").getValue().toString();
 
+                plantsSpinner.setSelection(position);
+
                 wateringDateTv.setText(lastWateredDate);
                 moistureLevelTv.setText(moistureMeterLevel);
                 sunData.setText(sunlightInfoData);
@@ -377,75 +382,97 @@ public class WaterPlantActivity extends AppCompatActivity implements AsyncRespon
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
-    void refreshData(){
+    void refreshData() {
+        Log.d("DEVICE", " " + devices.get(0));
+
+        String ipAddress = deviceIp;
+        List<String> result = new ArrayList<String>();
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+
         try {
-            String device_ipaddress = devices.get(0);
-            InetAddress address = InetAddress.getByName(device_ipaddress);
-            String hostName = address.getCanonicalHostName();
-            String name = address.getHostName();
+            Context context = getApplicationContext();
 
-            Socket socket;
-            List<String> result = new ArrayList<String>();
+            if (context != null) {
+                /* Looping IP addresses starting with prefix */
 
-            try {
-                Log.i("TRY", device_ipaddress + " is reachable");
+                InetAddress address = InetAddress.getByName(ipAddress);
+                boolean reachable = true;//address.isReachable(10);
+                String hostName = address.getCanonicalHostName();
+                String name = address.getHostName();
 
-                /* We need to check if it accepts sockets on port 6666 to see if it's a watering device */
-                socket = new Socket(device_ipaddress, 6666);
+                Socket socket = new Socket();
+                /* If the IP is reachable, it means the node exists on the network */
+                if (reachable) {
+                    /* Handshake */
+                    try {
+                        Log.i("TAG", "Trying " + ipAddress + "...");
 
-                Log.i("INFO", "Connected!");
-                // get the output stream from the socket.
-                OutputStream outputStream = socket.getOutputStream();
-                InputStream inputStream = socket.getInputStream();
-                // create a data output stream from the output stream so we can send data through it
-                DataOutputStream dataOutputStream = new DataOutputStream(outputStream);
-                DataInputStream dataInputStream = new DataInputStream(inputStream);
-
-                // Send GET to the device
-                dataOutputStream.writeUTF("GET");
-                dataOutputStream.flush(); // send the message
-                //dataOutputStream.close(); // close the output stream when we're done.
-                Log.i("Info", "GET request sent! ");
-
-                /* Get device response */
-                byte[] response_bytes = new byte[1024];
-
-                /* Get actual response length */
-                dataInputStream.read(response_bytes);
-                int n;
-                for (n = 0; n < 1024; n++) {
-                    if (response_bytes[n] == 0x00) {
-                        break;
+                        /* We need to check if it accepts sockets on port 6666 to see if it's a watering device */
+                        //socket = new Socket(String.valueOf(testIp), 6666);
+                        socket.connect(new InetSocketAddress(String.valueOf(ipAddress), 6666), 50);
                     }
+                    catch (Exception e)
+                    {
+                        Log.i("TAG", e.getMessage());
+                        socket.close();
+                    }
+
+                    Log.i("TAG", "Connected!");
+                    /* get the output stream from the socket. */
+                    OutputStream outputStream = socket.getOutputStream();
+                    InputStream inputStream = socket.getInputStream();
+                    /* create a data output stream from the output stream so we can send data through it */
+                    DataOutputStream dataOutputStream = new DataOutputStream(outputStream);
+                    DataInputStream dataInputStream = new DataInputStream(inputStream);
+
+                    /* Send GET to the device */
+                    dataOutputStream.writeUTF("GET");
+                    dataOutputStream.flush(); // send the message
+                    /* dataOutputStream.close(); // close the output stream when we're done. */
+                    Log.i("TAG", "GET request sent! ");
+
+                    /* Get device response */
+                    byte[] response_bytes = new byte[1024];
+
+                    /* Get actual response length */
+                    dataInputStream.read(response_bytes);
+                    int n;
+                    for(n = 0; n < 1024; n++)
+                    {
+                        if(response_bytes[n] == 0x00)
+                        {
+                            break;
+                        }
+                    }
+
+                    /* Copy only actual response */
+                    byte[] parsed_response_bytes = new byte[n];
+
+                    for(int ix = 0; ix < n; ix++)
+                    {
+                        parsed_response_bytes[ix] = response_bytes[ix];
+                    }
+
+                    /* Convert byte array of response to String */
+                    String response = new String(parsed_response_bytes, StandardCharsets.US_ASCII);
+
+                    /* Optional send an ACK (Acknowledge), doesn't do anything since server doesn't care */
+                    Log.i("TAG", "Answer: " + response); // response <- contains the data that the raspi sent to the app
+                    dataOutputStream.writeUTF("ACK");
+
+                    socket.close();
+
+                    result.add("Host: " + String.valueOf(name) + "(" + String.valueOf(ipAddress) + ")" + "---" + response);
+
+                    Log.i("TAG", "Host: " + String.valueOf(name) + "(" + String.valueOf(ipAddress) + ") is reachable!");
                 }
-
-                /* Copy only actual response */
-                byte[] parsed_response_bytes = new byte[n];
-
-                for (int ix = 0; ix < n; ix++) {
-                    parsed_response_bytes[ix] = response_bytes[ix];
-                }
-
-                /* Convert byte array of response to String */
-                String response = new String(parsed_response_bytes, StandardCharsets.US_ASCII);
-
-                /* Optional send an ACK (Acknowledge), doesn't do anything since server doesn't care */
-                Log.i("INFO", "Answer: " + response); // response <- contains the data that the raspi sent to the app
-                dataOutputStream.writeUTF("ACK");
-
-                socket.close();
-
-                Log.i("INFO", "Host: " + String.valueOf(name) + "(" + device_ipaddress + ") is reachable!");
-                result.add("Host: " + String.valueOf(name) + "(" + device_ipaddress + ")" + "---" + response);
-
-                processFinish(result);
-            } catch (Exception e) {
-                Log.i("TRY", device_ipaddress + " is not reachable");
             }
-
-        } catch (Exception e){
-            Log.i("TRY",  "nu bun");
+        } catch (Throwable t) {
+            Log.e("TAG", "Well that's not good.", t);
         }
+
+        processFinish(result);
     }
 
     @Override
@@ -461,11 +488,14 @@ public class WaterPlantActivity extends AppCompatActivity implements AsyncRespon
             Log.i("ProcessFinish", "info " + s);
             String aux =  s.substring(s.indexOf("(")+1, s.indexOf(")"));
             devices.add(aux);
+            deviceIp = devices.get(0);
 
             String[] splitString = s.split("---");
             // splitString[0] contains the first part with Host + device name + ip address
             moistureLevelDevices.add(splitString[1] + "%");
-            wateredDateDevices.add(splitString[2]);
+            if(splitString[2].length() != 1) {
+                wateredDateDevices.add(splitString[2]);
+            }
         }
 
         Log.i("SPINNERPOZITION", " " + getSpinnerPosition());
@@ -488,7 +518,10 @@ public class WaterPlantActivity extends AppCompatActivity implements AsyncRespon
             int pos = getSpinnerPosition();
             plantsSpinner.setSelection(pos);
 
-            wateringDateTv.setText(wateredDateDevices.get(0)); // ii mereu 0 ca avem un singur raspi care trimite date
+            if(!wateredDateDevices.isEmpty()){
+                wateringDateTv.setText(wateredDateDevices.get(0)); // ii mereu 0 ca avem un singur raspi care trimite date
+            }
+            //wateringDateTv.setText(wateredDateDevices.get(0)); // ii mereu 0 ca avem un singur raspi care trimite date
             moistureLevelTv.setText(moistureLevelDevices.get(0)); // ii mereu 0 ca avem un singur raspi care trimite date
             ipAddressTv.setText(devices.get(0)); // la devices ii mereu 0 ca avem un singur device
 
@@ -497,8 +530,13 @@ public class WaterPlantActivity extends AppCompatActivity implements AsyncRespon
             FirebaseUser currentFirebaseUser = FirebaseAuth.getInstance().getCurrentUser() ;
             String uId = currentFirebaseUser.getUid().toString();
 
+            plantsSpinner.setSelection(pos);
+
+
             DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference("uploads/" + uId + "/" + allPlantEntriesForUser.get(pos-1) + "/");
-            databaseRef.child("date").setValue(wateredDateDevices.get(0));
+            if(!wateredDateDevices.isEmpty()){
+                databaseRef.child("date").setValue(wateredDateDevices.get(0));
+            }
             databaseRef.child("moistureLevel").setValue(moistureLevelDevices.get(0))
                 .addOnSuccessListener(new OnSuccessListener < Void > () {
                     @Override
@@ -508,8 +546,9 @@ public class WaterPlantActivity extends AppCompatActivity implements AsyncRespon
                 }
             );
 
-            plantsSpinner.setSelection(pos);
             onPositionReadAndSetValues(pos);
+
+            //Log.i("POS", "position after all the shit " + pos);
             //Log.d("", "info");
         }
     }
@@ -678,7 +717,7 @@ class NetworkSniffTask extends AsyncTask<Void, Void, List<String>> {
         }
 
         //for testing purposes
-        result.add("Host: raspberry(192.168.1.140)---100---water date w/e");
+        //result.add("Host: raspberry(192.168.1.140)---100---water date w/e");
 
         delegate.processFinish(result);
     }
