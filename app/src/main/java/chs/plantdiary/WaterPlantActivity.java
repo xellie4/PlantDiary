@@ -115,7 +115,7 @@ public class WaterPlantActivity extends AppCompatActivity implements AsyncRespon
     private TextView soilData;
 
     private Button scanDevicesButton;
-    private Button refreshButton;
+    private Button cancelRefreshButton;
 
     static List<String> devices;
     private List<String> moistureLevelDevices;
@@ -151,7 +151,6 @@ public class WaterPlantActivity extends AppCompatActivity implements AsyncRespon
         soilData = findViewById(R.id.soilData);
 
         scanDevicesButton = (Button) findViewById(R.id.scan_devices_button);
-        refreshButton = (Button) findViewById(R.id.refresh_button);
 
         mPlantNames = new ArrayList<String>(); //store all plant name
         mPlantWateredDates = new ArrayList<String>(); //store all plant data
@@ -274,14 +273,7 @@ public class WaterPlantActivity extends AppCompatActivity implements AsyncRespon
             }
         });
 
-        //actualizare date ce sunt trimise de raspi
-        refreshButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //refreshData();
 
-            }
-        });
     }
 
     void onPositionReadAndSetValues(int position){
@@ -381,6 +373,7 @@ public class WaterPlantActivity extends AppCompatActivity implements AsyncRespon
         NetworkSniffTask nst = new NetworkSniffTask(getApplicationContext());
         nst.delegate = this;
         nst.execute();
+
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -392,6 +385,7 @@ public class WaterPlantActivity extends AppCompatActivity implements AsyncRespon
         RefreshDataTask refreshTask = new RefreshDataTask(getApplicationContext());
         refreshTask.delegate = this;
         refreshTask.execute();
+
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -524,6 +518,7 @@ public class WaterPlantActivity extends AppCompatActivity implements AsyncRespon
             ipAddressTv.setText("No device connected");
         } else {
             // debug purpose
+            // debug purpose
             for (String s : devices) {
                 Log.i("DEVICES", "device trimmed: " + s);
             }
@@ -563,15 +558,13 @@ public class WaterPlantActivity extends AppCompatActivity implements AsyncRespon
 
             onPositionReadAndSetValues(pos);
 
-            //Log.i("POS", "position after all the shit " + pos);
-            //Log.d("", "info");
             Handler handler = new Handler();
             Runnable r=new Runnable() {
                 public void run() {
                     refreshDataAsync();
                 }
             };
-            handler.postDelayed(r, 10000);
+            handler.postDelayed(r, 5000);
         }
     }
 

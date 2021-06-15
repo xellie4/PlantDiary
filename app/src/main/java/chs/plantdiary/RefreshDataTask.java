@@ -45,7 +45,6 @@ class RefreshDataTask extends AsyncTask<Void, Void, List<String>> {
             Context context = mContextRef.get();
 
             if (context != null) {
-                /* Looping IP addresses starting with prefix */
 
                 InetAddress address = InetAddress.getByName(ipAddress);
                 boolean reachable = true;//address.isReachable(10);
@@ -53,6 +52,7 @@ class RefreshDataTask extends AsyncTask<Void, Void, List<String>> {
                 String name = address.getHostName();
 
                 Socket socket = new Socket();
+
                 /* If the IP is reachable, it means the node exists on the network */
                 if (reachable) {
                     /* Handshake */

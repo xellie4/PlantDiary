@@ -89,6 +89,7 @@ class NetworkSniffTask extends AsyncTask<Void, Void, List<String>> {
                             /* We need to check if it accepts sockets on port 6666 to see if it's a watering device */
                             //socket = new Socket(String.valueOf(testIp), 6666);
                             socket.connect(new InetSocketAddress(String.valueOf(testIp), 6666), 50);
+
                         }
                         catch (Exception e)
                         {
@@ -97,6 +98,7 @@ class NetworkSniffTask extends AsyncTask<Void, Void, List<String>> {
                             continue;
                         }
 
+                        WaterPlantActivity.mProgressBar.setProgress(75);
                         Log.i(TAG, "Connected!");
                         /* get the output stream from the socket. */
                         OutputStream outputStream = socket.getOutputStream();
@@ -152,6 +154,8 @@ class NetworkSniffTask extends AsyncTask<Void, Void, List<String>> {
                         result.add("Host: " + String.valueOf(name) + "(" + String.valueOf(testIp) + ")" + "---" + response);
 
                         Log.i(TAG, "Host: " + String.valueOf(name) + "(" + String.valueOf(testIp) + ") is reachable!");
+                        WaterPlantActivity.mProgressBar.setProgress(90);
+                        break;
                     }
 
                 }
@@ -178,9 +182,6 @@ class NetworkSniffTask extends AsyncTask<Void, Void, List<String>> {
             Log.i("POSTEXEC", "ADDED: " + r);
 
         }
-
-        //for testing purposes
-        //result.add("Host: raspberry(192.168.1.140)---100---water date w/e");
 
         delegate.processFinish(result);
     }
